@@ -1,0 +1,14 @@
+{
+  "name": "BookInventory",
+  "version": "1.0.0",
+  "description": "Manages a gaming product inventory",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests"
+  },
+  "author": "Chris Snyder",
+  "license": "ISC"
+}
