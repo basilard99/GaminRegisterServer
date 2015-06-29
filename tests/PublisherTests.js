@@ -12,21 +12,21 @@ describe('Publisher Class Tests', function() {
 		it('should default to undefined', function() {
 			var cut = publisherFactory.createPublisher();
 			
-			assert.notOk(cut.getName());
+			assert.notOk(cut.name);
 		});
 		
 		it('should be what the ctor passed in', function() {
 			var cut = publisherFactory.createPublisher(TEST_NAME);
 			
-			assert.strictEqual(cut.getName(), TEST_NAME);
+			assert.strictEqual(cut.name, TEST_NAME);
 		});
 		
 		it('should be what the property was set to', function() {
 			var cut = publisherFactory.createPublisher();
-			assert.notOk(cut.getName(), 'default is other than undefined');
+			assert.notOk(cut.name, 'default is other than undefined');
 			
-			cut.setName(TEST_NAME);
-			assert.strictEqual(cut.getName(), TEST_NAME);			
+			cut.name = TEST_NAME;
+			assert.strictEqual(cut.name, TEST_NAME);			
 		});
 	});	
 	
@@ -34,21 +34,21 @@ describe('Publisher Class Tests', function() {
 		it('should default to undefined', function() {
 			var cut = publisherFactory.createPublisher();
 			
-			assert.notOk(cut.getWebSite());
+			assert.notOk(cut.webSite);
 		});
 		
 		it('should be what the ctor passed in', function() {
 			var cut = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE);
 			
-			assert.strictEqual(cut.getWebSite(), TEST_WEBSITE);
+			assert.strictEqual(cut.webSite, TEST_WEBSITE);
 		});
 		
 		it('should be what the property was set to', function() {
 			var cut = publisherFactory.createPublisher();
-			assert.notOk(cut.getWebSite(), 'default is other than undefined');
+			assert.notOk(cut.webSite, 'default is other than undefined');
 			
-			cut.setWebSite(TEST_WEBSITE);
-			assert.strictEqual(cut.getWebSite(), TEST_WEBSITE);			
+			cut.webSite = TEST_WEBSITE;
+			assert.strictEqual(cut.webSite, TEST_WEBSITE);			
 		});
 	});	
 	
@@ -56,21 +56,21 @@ describe('Publisher Class Tests', function() {
 		it('should default to undefined', function() {
 			var cut = publisherFactory.createPublisher();
 			
-			assert.notOk(cut.getCode());
+			assert.notOk(cut.code);
 		});
 		
 		it('should be what the ctor passed in', function() {
 			var cut = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE);
 			
-			assert.strictEqual(cut.getCode(), TEST_CODE);
+			assert.strictEqual(cut.code, TEST_CODE);
 		});
 		
 		it('should be what the property was set to', function() {
 			var cut = publisherFactory.createPublisher();
-			assert.notOk(cut.getCode(), 'default is other than undefined');
+			assert.notOk(cut.code, 'default is other than undefined');
 			
-			cut.setCode(TEST_CODE);
-			assert.strictEqual(cut.getCode(), TEST_CODE);			
+			cut.code = TEST_CODE;
+			assert.strictEqual(cut.code, TEST_CODE);			
 		});
 	});	
 	
@@ -78,21 +78,21 @@ describe('Publisher Class Tests', function() {
 		it('should default to undefined', function() {
 			var cut = publisherFactory.createPublisher();
 			
-			assert.notOk(cut.getIsActive());
+			assert.notOk(cut.isActive);
 		});
 		
 		it('should be what the ctor passed in', function() {
 			var cut = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE);
 			
-			assert.strictEqual(cut.getIsActive(), TEST_ISACTIVE);
+			assert.strictEqual(cut.isActive, TEST_ISACTIVE);
 		});
 		
 		it('should be what the property was set to', function() {
 			var cut = publisherFactory.createPublisher();
-			assert.notOk(cut.getIsActive(), 'default is other than undefined');
+			assert.notOk(cut.isActive, 'default is other than undefined');
 			
-			cut.setIsActive(TEST_ISACTIVE);
-			assert.strictEqual(cut.getIsActive(), TEST_ISACTIVE);			
+			cut.isActive = TEST_ISACTIVE;
+			assert.strictEqual(cut.isActive, TEST_ISACTIVE);			
 		});
 	});	
 	
@@ -100,21 +100,21 @@ describe('Publisher Class Tests', function() {
 		it('should default to undefined', function() {
 			var cut = publisherFactory.createPublisher();
 			
-			assert.notOk(cut.getDescription());
+			assert.notOk(cut.description);
 		});
 		
 		it('should be what the ctor passed in', function() {
 			var cut = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE, TEST_DESCRIPTION);
 			
-			assert.strictEqual(cut.getDescription(), TEST_DESCRIPTION);
+			assert.strictEqual(cut.description, TEST_DESCRIPTION);
 		});
 		
 		it('should be what the property was set to', function() {
 			var cut = publisherFactory.createPublisher();
-			assert.notOk(cut.getDescription(), 'default is other than undefined');
-			
-			cut.setDescription(TEST_DESCRIPTION);
-			assert.strictEqual(cut.getDescription(), TEST_DESCRIPTION);			
+			assert.notOk(cut.description, 'default is other than undefined');
+						
+			cut.description = TEST_DESCRIPTION;
+			assert.strictEqual(cut.description, TEST_DESCRIPTION);			
 		});
 	});
 });
