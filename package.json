@@ -10,5 +10,14 @@
     "test": "mocha tests"
   },
   "author": "Chris Snyder",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^3.0.0",
+    "express": "^4.13.0",
+    "gulp": "^3.9.0",
+    "gulp-nodemon": "^2.0.3",
+    "mocha": "^2.2.5",
+    "seraph": "^0.13.0",
+    "seraph-model": "^0.7.2"
+  }
 }
