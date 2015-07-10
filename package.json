@@ -12,6 +12,7 @@
   "author": "Chris Snyder",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.13.2",
     "chai": "^3.0.0",
     "express": "^4.13.0",
     "gulp": "^3.9.0",

@@ -44,7 +44,7 @@ describe('Data Service Tests', function() {
 			});			
 			
 		});
-	})
+	});
 	
 	describe('getting all publishers', function() {
 		
@@ -58,7 +58,7 @@ describe('Data Service Tests', function() {
 		
 		it('should get all publishers', function(done) {
 			
-			var publishers = dataService.getAllPublishers(function(models) {
+			dataService.getAllPublishers(function(models) {
 				
 				assert.isTrue(models.length > 0);
 				assert.isTrue(models[0].name === TEST_NAME);
@@ -67,5 +67,27 @@ describe('Data Service Tests', function() {
 			});
 		});
 		
-	})
+	});
+	
+	describe('getting a publisher by name', function() {
+		
+		before(function(done) {
+			clearNeo(function() {
+				addTestPublisher(function() {
+					done();
+				});
+			});
+		});
+		
+		it ('should get a matching publisher', function(done) {
+			
+			dataService.getPublisher(TEST_NAME, function(model) {
+				
+				assert.ok(model);
+				assert.isTrue(model.name === TEST_NAME);
+				
+				done();
+			});
+		});
+	});
 })
