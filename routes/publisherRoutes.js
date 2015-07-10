@@ -31,6 +31,12 @@ var routes = function() {
 				res.status(201).send(node);
 			});
 		})
+		.patch(function(req, res) {
+			var pub = publisherFactory.createPublisher(req.body.name, req.body.webSite, req.body.code, req.body.isActive, req.body.description);
+			dataService.savePublisher(pub, function(node) {
+				res.status(201).send(node);
+			});			
+		})
 		
 	return publisherRouter;
 };
