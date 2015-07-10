@@ -16,9 +16,12 @@
     "chai": "^3.0.0",
     "express": "^4.13.0",
     "gulp": "^3.9.0",
+    "gulp-mocha": "^2.1.2",
     "gulp-nodemon": "^2.0.3",
     "mocha": "^2.2.5",
     "seraph": "^0.13.0",
-    "seraph-model": "^0.7.2"
+    "seraph-model": "^0.7.2",
+    "should": "^7.0.2",
+    "sinon": "^1.15.4"
   }
 }
