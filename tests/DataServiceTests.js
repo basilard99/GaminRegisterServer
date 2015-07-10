@@ -8,6 +8,7 @@ var TEST_WEBSITE = 'TestWebSite';
 var TEST_CODE = 'TWS';
 var TEST_ISACTIVE = 'false';
 var TEST_DESCRIPTION = 'TestDescription';
+var TEST_DESCRIPTION2 = 'TestDescription2';
 
 var clearNeo = function(done) {
 	db.query('MATCH (n) DELETE (n)', function(err, result) {
@@ -35,14 +36,46 @@ describe('Data Service Tests', function() {
 			clearNeo(function() { done(); })
 		});
 		
-		it('should save a publisher', function(done) {
+		it('should save a new publisher', function(done) {
 			
 			var pub = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE, TEST_DESCRIPTION);
 			dataService.savePublisher(pub, function(node) {
+				
 				assert.ok(node);
+				
+				assert.strictEqual(node.name, TEST_NAME);
+				assert.strictEqual(node.webSite, TEST_WEBSITE);
+				assert.strictEqual(node.code, TEST_CODE);
+				assert.strictEqual(node.isActive, TEST_ISACTIVE);
+				assert.strictEqual(node.description, TEST_DESCRIPTION);
+				
 				done();
 			});			
 			
+		});
+		
+		it ('should update an existing publisher', function(done) {
+			
+			dataService.getAllPublishers(function(models) {
+				var publisherCount = models.length;
+						
+				var pub = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE, TEST_DESCRIPTION2);
+				dataService.savePublisher(pub, function(node) {
+					
+					assert.ok(node);
+					
+					assert.strictEqual(node.name, TEST_NAME);
+					assert.strictEqual(node.webSite, TEST_WEBSITE);
+					assert.strictEqual(node.code, TEST_CODE);
+					assert.strictEqual(node.isActive, TEST_ISACTIVE);
+					assert.strictEqual(node.description, TEST_DESCRIPTION2);
+
+					dataService.getAllPublishers(function(models) {
+						assert.strictEqual(models.length, publisherCount);
+						done();
+					});				
+				});
+			});
 		});
 	});
 	
