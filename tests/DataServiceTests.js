@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var db = require('seraph')({name: 'neo4j', pass: 'pass'});
-var dataService = require('../lib/dataService.js').create(db);
-var publisherFactory = require('../lib/publisher.js');
+var dataService = require('../lib/models/dataService.js').create(db);
+var publisherFactory = require('../lib/models/publisher.js');
 
 var TEST_NAME = 'TestName';
 var TEST_WEBSITE = 'TestWebSite';

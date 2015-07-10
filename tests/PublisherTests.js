@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var publisherFactory = require('../lib/publisher.js');
+var publisherFactory = require('../lib/models/publisher.js');
 
 var TEST_NAME = 'TestName';
 var TEST_WEBSITE = 'TestWebSite';
