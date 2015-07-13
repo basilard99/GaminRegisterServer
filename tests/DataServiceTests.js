@@ -36,10 +36,28 @@ describe('Data Service Tests', function() {
 			clearNeo(function() { done(); })
 		});
 		
+		it('should return an error if publisher is not truthy', function(done) {
+			dataService.savePublisher(null, function(err, node) {
+				assert.strictEqual(err.message, 'Publisher is required')
+				assert.notOk(node);
+				done();
+			});
+		});
+		
+		it('should return an error if publisher.name is not truthy', function(done) {
+			var testData = { name: '' };
+			
+			dataService.savePublisher(testData, function(err, node) {
+				assert.strictEqual(err.message, 'Publisher Name is required')
+				assert.notOk(node);
+				done();
+			});
+		});
+		
 		it('should save a new publisher', function(done) {
 			
 			var pub = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE, TEST_DESCRIPTION);
-			dataService.savePublisher(pub, function(node) {
+			dataService.savePublisher(pub, function(err, node) {
 				
 				assert.ok(node);
 				
@@ -56,11 +74,11 @@ describe('Data Service Tests', function() {
 		
 		it ('should update an existing publisher', function(done) {
 			
-			dataService.getAllPublishers(function(models) {
+			dataService.getAllPublishers(function(err, models) {
 				var publisherCount = models.length;
 						
 				var pub = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE, TEST_DESCRIPTION2);
-				dataService.savePublisher(pub, function(node) {
+				dataService.savePublisher(pub, function(err, node) {
 					
 					assert.ok(node);
 					
@@ -70,7 +88,7 @@ describe('Data Service Tests', function() {
 					assert.strictEqual(node.isActive, TEST_ISACTIVE);
 					assert.strictEqual(node.description, TEST_DESCRIPTION2);
 
-					dataService.getAllPublishers(function(models) {
+					dataService.getAllPublishers(function(err, models) {
 						assert.strictEqual(models.length, publisherCount);
 						done();
 					});				
@@ -91,7 +109,7 @@ describe('Data Service Tests', function() {
 		
 		it('should get all publishers', function(done) {
 			
-			dataService.getAllPublishers(function(models) {
+			dataService.getAllPublishers(function(err, models) {
 				
 				assert.isTrue(models.length > 0);
 				assert.isTrue(models[0].name === TEST_NAME);
@@ -112,9 +130,17 @@ describe('Data Service Tests', function() {
 			});
 		});
 		
+		it('should return an error if publisher.name is not truthy', function(done) {
+			dataService.getPublisher('', function(err, model) {
+				assert.strictEqual(err.message, 'Publisher Name is required')
+				assert.notOk(model);
+				done();
+			});
+		});
+		
 		it ('should get a matching publisher', function(done) {
 			
-			dataService.getPublisher(TEST_NAME, function(model) {
+			dataService.getPublisher(TEST_NAME, function(err, model) {
 				
 				assert.ok(model);
 				assert.isTrue(model.name === TEST_NAME);
