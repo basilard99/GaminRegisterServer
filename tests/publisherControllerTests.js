@@ -10,7 +10,7 @@ var TEST_DESCRIPTION = 'TestDescription';
 
 describe('Publisher controller tests:', function() {
 	
-	describe('Post', function() {
+	describe('Post Publisher', function() {
 		
 		it ('should fail if no name is part of the body', function() {
 			var dataService = {};
@@ -160,4 +160,98 @@ describe('Publisher controller tests:', function() {
 			
 		})
 	})
+	
+	describe('Put Publisher', function() {
+		
+		it ('should fail if no name is part of the body', function() {
+			var dataService = {};
+			
+			var req = {
+				body: {}
+			};
+			
+			var res = {
+				status: sinon.spy(),
+				send: sinon.spy()
+			};
+			
+			var publisherController = require('../lib/controllers/publisherController.js')(dataService);
+			publisherController.put(req, res);
+			
+			assert.isTrue(res.status.calledWith(400), 'Unexpected status code');
+			assert.isTrue(res.send.calledWith('Name is required'), 'Unexpected response');
+			assert.isTrue(res.send.calledOnce);
+		});		
+		
+		it ('should fail if the name is empty', function() {
+			var dataService = {};
+			
+			var req = {
+				body: { name: '' }
+			};
+			
+			var res = {
+				status: sinon.spy(),
+				send: sinon.spy()
+			};
+			
+			var publisherController = require('../lib/controllers/publisherController.js')(dataService);
+			publisherController.put(req, res);
+			
+			assert.isTrue(res.status.calledWith(400), 'Unexpected status code');
+			assert.isTrue(res.send.calledWith('Name is required'), 'Unexpected response');
+			assert.isTrue(res.send.calledOnce);
+		});
+	
+		it ('should return 500 if the model cannot be saved', function() {
+			var testModel = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE, TEST_DESCRIPTION);
+			var dataService = {
+				savePublisher: function(publisher, callback) {
+					callback(new Error('Doesn\'t matter'), null);
+				}
+			};
+			
+			var req = {
+				body: { name: TEST_NAME, webSite: TEST_WEBSITE, code: TEST_CODE, isActive: TEST_ISACTIVE, description: TEST_DESCRIPTION }
+			};
+			
+			var res = {
+				status: sinon.spy(),
+				send: sinon.spy()
+			};
+						
+			var publisherController = require('../lib/controllers/publisherController.js')(dataService);
+			publisherController.put(req, res);
+			
+			assert.isTrue(res.status.calledWith(500), 'Unexpected status code');
+			assert.isTrue(res.send.calledWith('An unknown error occurred'), 'Unexpected response');	
+			assert.isTrue(res.send.calledOnce);		
+		});
+		
+		it ('should successfully save the model', function() {
+			var testModel = publisherFactory.createPublisher(TEST_NAME, TEST_WEBSITE, TEST_CODE, TEST_ISACTIVE, TEST_DESCRIPTION);
+			var dataService = {
+				savePublisher: function(publisher, callback) {
+					callback(null, publisher);
+				}
+			};
+			
+			var req = {
+				body: { name: TEST_NAME, webSite: TEST_WEBSITE, code: TEST_CODE, isActive: TEST_ISACTIVE, description: TEST_DESCRIPTION }
+			};
+			
+			var res = {
+				status: sinon.spy(),
+				send: sinon.spy()
+			};
+						
+			var publisherController = require('../lib/controllers/publisherController.js')(dataService);
+			publisherController.put(req, res);
+			
+			assert.isTrue(res.status.calledWith(201), 'Unexpected status code');
+			assert.isTrue(res.send.calledWith(testModel), 'Unexpected response');
+			assert.isTrue(res.send.calledOnce);
+		})
+	
+	});
 });
