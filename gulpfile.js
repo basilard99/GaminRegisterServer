@@ -33,7 +33,7 @@ gulp.task('mantest', function() {
 	});
 });
 
-gulp.task('test', function() {
+gulp.task('alltest', function() {
 	env({vars: { ENV: 'test' }});
 
 	gulp.src('tests/**/*.js', { read: false })
@@ -45,4 +45,11 @@ gulp.task('itest', function() {
 
 	gulp.src('tests/integrationTests/*.js', { read: false })
 		.pipe(gulpMocha());
-})
+});
+
+gulp.task('utest', function() {
+	env({vars: { ENV: 'test' }});
+
+	gulp.src('tests/unitTests/*.js', { read: false })
+		.pipe(gulpMocha());
+});
