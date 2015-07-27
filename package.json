@@ -23,5 +23,10 @@
     "seraph-model": "^0.7.2",
     "should": "^7.0.2",
     "sinon": "^1.15.4"
+  },
+  "devDependencies": {
+    "gulp-env": "^0.2.0",
+    "methods": "^1.1.1",
+    "supertest": "^1.0.1"
   }
 }
