@@ -3,6 +3,8 @@ var nodemon = require('gulp-nodemon');
 var gulpMocha = require('gulp-mocha');
 var env = require('gulp-env');
 var superTest = require('supertest');
+var jslint = require('gulp-jslint');
+var jshint = require('gulp-jshint');
 
 gulp.task('default', function() {
 	nodemon({
@@ -17,6 +19,12 @@ gulp.task('default', function() {
 		console.log('Restarting');
 	});
 });
+
+gulp.task('lint', function() {
+	return gulp.src('./lib/controllers/*.js')
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'));
+})
 
 gulp.task('mantest', function() {
 	nodemon({
