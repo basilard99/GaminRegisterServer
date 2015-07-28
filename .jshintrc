@@ -1,0 +1,9 @@
+{
+	"curly" : true,
+	"eqeqeq" : true,
+	"forin" : true,
+	"node" : true,
+	"strict" : true,
+	"undef" : true,
+	"unused" : true
+}
