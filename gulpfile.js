@@ -3,18 +3,15 @@ var nodemon = require('gulp-nodemon');
 var gulpMocha = require('gulp-mocha');
 var env = require('gulp-env');
 var superTest = require('supertest');
-var jslint = require('gulp-jslint');
-var jshint = require('gulp-jshint');
+var eslint = require('gulp-eslint');
 var watch = require('gulp-watch');
 
 gulp.task('dev', function() {
 	var watcher = gulp.watch(['app.js', 'gulpfile.js', './lib/**/*.js', './tests/**/*.js']);
 	watcher.on('change', function(event) {
-		console.log('file changed');
-		gulp.src(event.path)
-			.pipe(jshint())
-			.pipe(jshint.reporter('jshint-stylish'));
-		console.log('done');
+		gulp.src(['./lib/**/*.js', './tests/**/*.js'])
+			.pipe(eslint())
+			.pipe(eslint.format());
 	});
 });
 
@@ -33,9 +30,9 @@ gulp.task('default', function() {
 });
 
 gulp.task('lint', function() {
-	return gulp.src('./lib/**/*.js')
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'));
+	return gulp.src(['./lib/**/*.js', './tests/**/*.js'])
+		.pipe(eslint())
+		.pipe(eslint.format());
 })
 
 gulp.task('mantest', function() {
