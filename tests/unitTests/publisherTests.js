@@ -37,9 +37,9 @@ describe('Publisher Factory Tests', function describe() {
 });
 
 describe('Publisher Class Tests', function publisher() {
-	
+
 	describe('name', function name() {
-	
+
 		it('should be what the ctor passed in', function test() {
 			var cut = publisherFactory.createPublisher(TEST_NAME);
 

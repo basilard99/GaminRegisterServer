@@ -13,23 +13,23 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.2",
-    "chai": "^3.0.0",
     "express": "^4.13.0",
-    "gulp": "^3.9.0",
-    "gulp-mocha": "^2.1.2",
-    "gulp-nodemon": "^2.0.3",
-    "mocha": "^2.2.5",
     "seraph": "^0.13.0",
-    "seraph-model": "^0.7.2",
-    "should": "^7.0.2",
-    "sinon": "^1.15.4"
+    "seraph-model": "^0.7.2"
   },
   "devDependencies": {
+    "chai": "^3.0.0",
+    "gulp": "^3.9.0",
     "gulp-env": "^0.2.0",
-    "gulp-jshint": "^1.11.2",
+    "gulp-eslint": "^1.0.0",
+    "gulp-mocha": "^2.1.2",
+    "gulp-nodemon": "^2.0.3",
     "gulp-watch": "^4.3.4",
     "jshint-stylish": "^2.0.1",
     "methods": "^1.1.1",
+    "mocha": "^2.2.5",
+    "should": "^7.0.2",
+    "sinon": "^1.15.4",
     "supertest": "^1.0.1"
   }
 }

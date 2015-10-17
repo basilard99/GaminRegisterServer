@@ -3,7 +3,7 @@
     "node": true
   },
   "rules": {
-	"array-bracket-spacing": [2, "always"],
+	"array-bracket-spacing": [2, "never"],
     "block-scoped-var": 2,
     "brace-style": [2, "1tbs"],
     "camelcase": 1,
