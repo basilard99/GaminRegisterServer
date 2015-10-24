@@ -13,8 +13,7 @@ var TEST_DESCRIPTION = 'TestDescription';
 var TEST_DESCRIPTION2 = 'TestDescription2';
 
 var clearNeo = function clear(done) {
-	db.query('MATCH (n) DELETE (n)', function execute(err, result) {
-		result;
+	db.query('MATCH (n) DELETE (n)', function execute(err) {
 		done();
 	});
 };
@@ -26,9 +25,7 @@ var addTestPublisher = function setup(done) {
 			'code: \'' + TEST_CODE + '\', ' +
 			'isActive: \'' + TEST_ISACTIVE + '\', ' +
 			'description: \'' + TEST_DESCRIPTION + '\'})',
-		function cb(err, result) {
-			result;
-
+		function cb(err) {
 			if (err) {
 				throw err;
 			}

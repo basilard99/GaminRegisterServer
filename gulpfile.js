@@ -8,6 +8,9 @@ var nodemon = require('gulp-nodemon');
 var gulpMocha = require('gulp-mocha');
 var env = require('gulp-env');
 var eslint = require('gulp-eslint');
+var child = require('child_process');
+var exec = require('child_process').exec;
+var spawn = require('child_process').spawnSync;
 
 gulp.task('dev', function devTask() {
 	var watcher = gulp.watch(['app.js',
@@ -38,6 +41,20 @@ gulp.task('unit', function unitTask() {
 
 	gulp.src('tests/unitTests/*.js', { read: false })
 		.pipe(gulpMocha());
+});
+
+gulp.task('data', function(done) {
+	
+	var proc = exec('.\\..\\neo4j-community-2.3.0-M03\\bin\\Neo4j.bat', function executeFunction(err, stdout, stderr) {})
+	  .on('error', function() {
+		console.log('Error occurred while launching neo4j: ' + error);
+	}).on('exit', function() {
+		setTimeout(function() {
+			gulp.src('tests/dataTests/*.js', { read: false }).pipe(gulpMocha());
+			done();
+		}, 10000);
+	});
+	  
 });
 
 gulp.task('default', function defaultTask() {
