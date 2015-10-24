@@ -10,8 +10,7 @@ var clearNeo = function clear(done) {
 		name: 'neo4j',
 		pass: 'pass'
 	});
-	db.query('MATCH (n) DELETE (n)', function query(err, results) {
-		results;
+	db.query('MATCH (n) DELETE (n)', function deleteAll() {
 		done();
 	});
 };

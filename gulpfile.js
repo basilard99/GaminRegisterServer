@@ -30,10 +30,22 @@ gulp.task('lint', function lintTask() {
 		.pipe(eslint.format());
 });
 
-gulp.task('integration', function integrationTestTask() {
+gulp.task('integration', function integrationTestTask(done) {
 	env({ vars: { ENV: 'test' } });
-	gulp.src('tests/integrationTests/*.js', { read: false })
-		.pipe(gulpMocha());
+
+	exec(neo4jPath, function executeFunction() {})
+        .on('error', function handleErrorEvent() {
+            console.log('Error occurred while launching neo4j: ' + error);
+		}).on('exit', function handleExitEvent() {
+            setTimeout(function timeoutExceeded() {
+
+				// This gives time for the Neo4j server to run
+				gulp.src('tests/integrationTests/*.js', { read: false })
+					.pipe(gulpMocha());
+
+				done();
+			}, 10000);
+		});
 });
 
 gulp.task('unit', function unitTestTask() {

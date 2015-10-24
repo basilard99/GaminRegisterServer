@@ -98,10 +98,10 @@ describe('Publisher Controller Tests:', function publisherController() {
 				'Unexpected status code'
 			);
 			assert.isTrue(
-				res.send.calledWith('An unknown error occurred'),
+				res.send.calledWith('BI: An unknown error occurred'),
 				'Unexpected response'
 			);
-			assert.isTrue(res.send.calledOnce);
+			assert.isTrue(res.send.calledOnce, 'Send was not called once');
 		});
 
 		it ('should successfully save the model', function test() {
@@ -211,7 +211,7 @@ describe('Publisher Controller Tests:', function publisherController() {
 				'Unexpected status code'
 			);
 			assert.isTrue(
-				res.send.calledWith('An unknown error occurred'),
+				res.send.calledWith('BI: An unknown error occurred'),
 				'Unexpected response'
 			);
 			assert.isFalse(res.json.called);
@@ -303,7 +303,7 @@ describe('Publisher Controller Tests:', function publisherController() {
 				'Unexpected status code'
 			);
 			assert.isTrue(
-				res.send.calledWith('An unknown error occurred'),
+				res.send.calledWith('BI: An unknown error occurred'),
 				'Unexpected response'
 			);
 			assert.isTrue(res.send.calledOnce);
@@ -438,7 +438,7 @@ describe('Publisher Controller Tests:', function publisherController() {
 				res.status.calledWith(500),
 				'Unexpected status code');
 			assert.isTrue(
-				res.send.calledWith('An unknown error occurred'),
+				res.send.calledWith('BI: An unknown error occurred'),
 				'Unexpected response'
 			);
 			assert.isTrue(res.send.calledOnce);
