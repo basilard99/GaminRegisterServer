@@ -8,9 +8,9 @@ var nodemon = require('gulp-nodemon');
 var gulpMocha = require('gulp-mocha');
 var env = require('gulp-env');
 var eslint = require('gulp-eslint');
-var child = require('child_process');
 var exec = require('child_process').exec;
-var spawn = require('child_process').spawnSync;
+
+var neo4jPath = '.\\..\\neo4j-community-2.3.0-M03\\bin\\Neo4j.bat';
 
 gulp.task('dev', function devTask() {
 	var watcher = gulp.watch(['app.js',
@@ -30,31 +30,35 @@ gulp.task('lint', function lintTask() {
 		.pipe(eslint.format());
 });
 
-gulp.task('integration', function integrationTask() {
+gulp.task('integration', function integrationTestTask() {
 	env({ vars: { ENV: 'test' } });
 	gulp.src('tests/integrationTests/*.js', { read: false })
 		.pipe(gulpMocha());
 });
 
-gulp.task('unit', function unitTask() {
+gulp.task('unit', function unitTestTask() {
 	env({ vars: { ENV: 'test' } });
 
 	gulp.src('tests/unitTests/*.js', { read: false })
 		.pipe(gulpMocha());
 });
 
-gulp.task('data', function(done) {
-	
-	var proc = exec('.\\..\\neo4j-community-2.3.0-M03\\bin\\Neo4j.bat', function executeFunction(err, stdout, stderr) {})
-	  .on('error', function() {
-		console.log('Error occurred while launching neo4j: ' + error);
-	}).on('exit', function() {
-		setTimeout(function() {
-			gulp.src('tests/dataTests/*.js', { read: false }).pipe(gulpMocha());
-			done();
-		}, 10000);
-	});
-	  
+gulp.task('data', function dataTestTask(done) {
+
+	exec(neo4jPath, function executeFunction() {})
+        .on('error', function handleErrorEvent() {
+            console.log('Error occurred while launching neo4j: ' + error);
+		}).on('exit', function handleExitEvent() {
+            setTimeout(function timeoutExceeded() {
+
+				// This gives time for the Neo4j server to run
+				gulp.src('tests/dataTests/*.js', { read: false })
+					.pipe(gulpMocha());
+
+				done();
+			}, 10000);
+		});
+
 });
 
 gulp.task('default', function defaultTask() {
@@ -84,12 +88,5 @@ gulp.task('mantest', function manualTestTask() {
 	.on('restart', function actOnRestart() {
 		console.log('Restarting');
 	});
-});
-
-gulp.task('alltest', function allTestTask() {
-	env({ vars: { ENV: 'test' } });
-
-	gulp.src('tests/**/*.js', { read: false })
-		.pipe(gulpMocha());
 });
 

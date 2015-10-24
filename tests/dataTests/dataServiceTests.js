@@ -13,7 +13,7 @@ var TEST_DESCRIPTION = 'TestDescription';
 var TEST_DESCRIPTION2 = 'TestDescription2';
 
 var clearNeo = function clear(done) {
-	db.query('MATCH (n) DELETE (n)', function execute(err) {
+	db.query('MATCH (n) DELETE (n)', function execute() {
 		done();
 	});
 };
