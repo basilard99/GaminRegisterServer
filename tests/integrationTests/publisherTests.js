@@ -45,7 +45,6 @@ describe('Publisher Integration Tests', function describe() {
 			.post('/api/publishers')
 			.send(testData)
 			.end(function end(err, results) {
-				results;
 				if (err) {
 					should.fail('Unable to post publisher: ' + err.message);
 					done();
