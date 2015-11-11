@@ -13,6 +13,8 @@ var exec = require('child_process').exec;
 var neo4jPath = '.\\..\\neo4j-community-2.3.0-M03\\bin\\Neo4j.bat';
 
 gulp.task('dev', function devTask() {
+	env({ vars: { ENV: 'test' } });
+	
 	var watcher = gulp.watch(['app.js',
                               'gulpfile.js',
                               './lib/**/*.js',
@@ -22,6 +24,26 @@ gulp.task('dev', function devTask() {
 			.pipe(eslint())
 			.pipe(eslint.format());
 	});
+
+	exec(neo4jPath, function executeFunction() {})
+        .on('error', function handleErrorEvent() {
+            console.log('Error occurred while launching neo4j: ' + error);
+		}).on('exit', function handleExitEvent() {
+			console.log('Exiting Neo4J');
+		});
+	
+	nodemon({
+		script: 'app.js',
+		ext: 'js',
+		env: {
+			PORT: 8000
+		},
+		ignore: ['./node_modules/**']
+	})
+	.on('restart', function actOnRestart() {
+		console.log('Restarting');
+	});
+	
 });
 
 gulp.task('lint', function lintTask() {

@@ -19,6 +19,7 @@ app.get('/', function(req, res) {
 
 app.server = app.listen(port, function() {
 	console.log('Gulp is running my app on port: ' + port);
+	console.log('Neo4j is running on port: ' + neo4Jport);
 });
 
 		
