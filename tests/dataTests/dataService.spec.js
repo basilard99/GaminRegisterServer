@@ -2,8 +2,8 @@
 
 var assert = require('chai').assert;
 var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
-var dataService = require('../../lib/models/dataService.js').create(db);
 var publisherFactory = require('../../lib/models/publisher.js');
+var dataService = require('../../lib/models/dataService.js').create(db, publisherFactory);
 
 var TEST_NAME = 'TestName';
 var TEST_WEBSITE = 'TestWebSite';
@@ -12,34 +12,59 @@ var TEST_ISACTIVE = 'false';
 var TEST_DESCRIPTION = 'TestDescription';
 var TEST_DESCRIPTION2 = 'TestDescription2';
 
-var clearNeo = function clear(done) {
+var addNonPublisherNode = function addNonPublisher(done) {
+
+	var dataToSave =  { name: 'NotImportant',
+						someValue: '22' };
+
+	db.save(dataToSave, 'Dummy', function saveDone(err) {
+		if (err) {
+			throw err;
+		}
+
+		done();
+	});
+
+};
+
+var clearNeo4j = function clear(done) {
 	db.query('MATCH (n) DELETE (n)', function execute() {
 		done();
 	});
 };
 
-var addTestPublisher = function setup(done) {
-	db.query('CREATE (n:Publisher ' +
-			'{ name: \'' + TEST_NAME + '\', ' +
-			'webSite: \'' + TEST_WEBSITE + '\', ' +
-			'code: \'' + TEST_CODE + '\', ' +
-			'isActive: \'' + TEST_ISACTIVE + '\', ' +
-			'description: \'' + TEST_DESCRIPTION + '\'})',
-		function cb(err) {
-			if (err) {
-				throw err;
-			}
+var addSinglePublisherNode = function addSingleNode(data) {
 
-			done();
+	var dataToSave =  { name: data.name,
+						code: data.code,
+						webSite: data.webSite,
+						isActive: data.isActive,
+						description: data.description };
+	db.save(dataToSave, 'Publisher', function queryDone(err) {
+		if (err) {
+			throw err;
+		}
 	});
+
 };
 
-describe('Data Service Tests', function dataServiceTests() {
+var addTestPublishers = function add(samplePublisherData, done) {
 
-	describe('saving a publisher', function savePublisher() {
+	for (var i = 0; i < samplePublisherData.length; i++) {
+		addSinglePublisherNode(samplePublisherData[i], function doneAdding() {});
+    }
+
+	setTimeout(function timeoutExceeded() {
+		done();
+	}, 1500);
+};
+
+describe('The Data Service will behave as follows --', function dataServiceTests() {
+
+	describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
 
 		before(function before(done) {
-			clearNeo(function clear() {
+			clearNeo4j(function clear() {
 				done();
 			});
 		});
@@ -125,33 +150,39 @@ describe('Data Service Tests', function dataServiceTests() {
 		});
 	});
 
-	describe('getting all publishers', function describe() {
+	describe('When retrieving all publishers --', function describe() {
 
 		before(function before(done) {
-			clearNeo(function clear() {
-				addTestPublisher(function cb() {
+			clearNeo4j(function doneClearing() {
+				addNonPublisherNode(function doneAddingNonPublisher() {
 					done();
 				});
 			});
 		});
 
-		it('should get all publishers', function test(done) {
+		it('will get only publisher nodes', function test(done) {
 
-			dataService.getAllPublishers(function verify(err, models) {
+			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
+			addTestPublishers(samplePublisherData, function doneAddingTestPublishers() {
 
-				assert.isTrue(models.length > 0);
-				assert.isTrue(models[0].name === TEST_NAME);
-				done();
+				dataService.getAllPublishers(function verify(err, models) {
 
+					// There are 3 test publishers created, plus one dummy node.
+					assert.isTrue(models.length === 3, 'length was: ' + models.length);
+					done();
+
+				});
 			});
+
 		});
 	});
 
-	describe('getting a publisher by name', function describe() {
+	describe('getting a publisher by name (NEEDS REVIEWED)', function describe() {
 
+		var samplePublisherData = require('./fakes/publisherData.js').createOneFakePublisher();
 		before(function before(done) {
-			clearNeo(function clear() {
-				addTestPublisher(function cb() {
+			clearNeo4j(function clear() {
+				addTestPublishers(samplePublisherData, function cb() {
 					done();
 				});
 			});
@@ -170,15 +201,16 @@ describe('Data Service Tests', function dataServiceTests() {
 			);
 		});
 
-		it ('should get a matching publisher', function test(done) {
+		it('should get a matching publisher', function test(done) {
 
-			dataService.getPublisher(TEST_NAME, function verify(err, model) {
+			dataService.getPublisher('Fantasy Flight Games', function verify(err, model) {
 
 				assert.ok(model);
-				assert.isTrue(model.name === TEST_NAME);
+				assert.isTrue(model.name === 'Fantasy Flight Games');
 
 				done();
 			});
 		});
 	});
+
 });

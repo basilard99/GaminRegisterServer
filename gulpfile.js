@@ -14,7 +14,7 @@ var neo4jPath = '.\\..\\neo4j-community-2.3.0-M03\\bin\\Neo4j.bat';
 
 gulp.task('dev', function devTask() {
 	env({ vars: { ENV: 'test' } });
-	
+
 	var watcher = gulp.watch(['app.js',
                               'gulpfile.js',
                               './lib/**/*.js',
@@ -31,7 +31,7 @@ gulp.task('dev', function devTask() {
 		}).on('exit', function handleExitEvent() {
 			console.log('Exiting Neo4J');
 		});
-	
+
 	nodemon({
 		script: 'app.js',
 		ext: 'js',
@@ -43,7 +43,7 @@ gulp.task('dev', function devTask() {
 	.on('restart', function actOnRestart() {
 		console.log('Restarting');
 	});
-	
+
 });
 
 gulp.task('lint', function lintTask() {
@@ -86,7 +86,7 @@ gulp.task('data', function dataTestTask(done) {
             setTimeout(function timeoutExceeded() {
 
 				// This gives time for the Neo4j server to run
-				gulp.src('tests/dataTests/*.js', { read: false })
+				gulp.src('tests/dataTests/*.spec.js', { read: false })
 					.pipe(gulpMocha());
 
 				done();
