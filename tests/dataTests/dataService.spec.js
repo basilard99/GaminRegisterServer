@@ -61,6 +61,51 @@ var addTestPublishers = function add(samplePublisherData, done) {
 
 describe('The Data Service will behave as follows --', function dataServiceTests() {
 
+	describe('when handling publisher lists', function publisherList() {
+		this.timeout(10000);
+
+		before(function before(done) {
+			clearNeo4j(function doneClearing() {
+				addNonPublisherNode(function doneAddingNonPublisher() {
+					done();
+				});
+			});
+		});
+
+		it('will get only publisher nodes', function test(done) {
+
+			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
+			addTestPublishers(samplePublisherData, function doneAddingTestPublishers() {
+
+				dataService.getAllPublishers(function verify(err, models) {
+
+					// There are 3 test publishers created, plus one dummy node.
+					assert.isTrue(models.length === 3, 'length was: ' + models.length);
+					done();
+
+				});
+			});
+
+		});
+
+		it.only('will create nodes for all valid publishers', function testCreateMultipleNodes(done) {
+
+			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
+
+			dataService.savePublisherList({ list: samplePublisherData}, function finishedSaving(err) {
+				setTimeout(function timeoutExceeded() {
+					assert.isUndefined(err);
+
+					dataService.getAllPublishers(function verify(err, models) {
+						// There are 3 test publishers created, plus one dummy node.
+						assert.isTrue(models.length === 3, 'length was: ' + models.length);
+						done();
+					});
+				}, 1500);
+			});
+		});
+	});
+
 	describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
 
 		before(function before(done) {
@@ -147,33 +192,6 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 					});
 				});
 			});
-		});
-	});
-
-	describe('When retrieving all publishers --', function describe() {
-
-		before(function before(done) {
-			clearNeo4j(function doneClearing() {
-				addNonPublisherNode(function doneAddingNonPublisher() {
-					done();
-				});
-			});
-		});
-
-		it('will get only publisher nodes', function test(done) {
-
-			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
-			addTestPublishers(samplePublisherData, function doneAddingTestPublishers() {
-
-				dataService.getAllPublishers(function verify(err, models) {
-
-					// There are 3 test publishers created, plus one dummy node.
-					assert.isTrue(models.length === 3, 'length was: ' + models.length);
-					done();
-
-				});
-			});
-
 		});
 	});
 
