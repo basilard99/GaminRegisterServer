@@ -48,12 +48,10 @@ gulp.task('dev', function devTask() {
 
 });
 
-gulp.task('lint', function lintTask(done) {
-    done();
-
-//	return gulp.src(['gulpfile.js', './lib/**/*.js', './tests/**/*.js'])
-//		.pipe(eslint())
-//		.pipe(eslint.format());
+gulp.task('lint', function lintTask() {
+	return gulp.src(['gulpfile.js', './lib/**/*.js', './tests/**/*.js'])
+               .pipe(eslint())
+               .pipe(eslint.format());
 });
 
 gulp.task('integration', function integrationTestTask(done) {
