@@ -44,7 +44,7 @@ describe('Publisher Integration Tests', function describe() {
 		request
 			.post('/api/publishers')
 			.send(testData)
-			.end(function end(err, results) {
+			.end(function end(err) {
 				if (err) {
 					should.fail('Unable to post publisher: ' + err.message);
 					done();
@@ -73,8 +73,8 @@ describe('Publisher Integration Tests', function describe() {
 		request
 			.post('/api/publishers')
 			.send(testData)
-			.end(function end(err, results) {
-				results;
+			.end(function end(err) {
+
 				if (err) {
 					should.fail('Unable to post publisher: ' + err.message);
 					done();
@@ -82,8 +82,8 @@ describe('Publisher Integration Tests', function describe() {
 
 				request.post('/api/publishers')
 					.send(testData2)
-					.end(function end(err, results) {
-						results;
+					.end(function end(err) {
+
 						if (err) {
 							should.fail('Unable to post publisher: '
 										+ err.message);
@@ -98,7 +98,7 @@ describe('Publisher Integration Tests', function describe() {
 									should.fail(err.message);
 									done();
 								}
-								should.equal(results.body.length, 2);
+								should.equal(results.body.list.length, 2);
 								done();
 							});
 					});

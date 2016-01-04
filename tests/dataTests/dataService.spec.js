@@ -64,7 +64,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 	describe('when handling publisher lists', function publisherList() {
 		this.timeout(10000);
 
-		before(function before(done) {
+		beforeEach(function before(done) {
 			clearNeo4j(function doneClearing() {
 				addNonPublisherNode(function doneAddingNonPublisher() {
 					done();
@@ -92,7 +92,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 
 			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
 
-			dataService.savePublisherList({ list: samplePublisherData}, function finishedSaving(err) {
+			dataService.savePublisherList({ list: samplePublisherData }, function finishedSaving(err) {
 				setTimeout(function timeoutExceeded() {
 					assert.isUndefined(err);
 
@@ -108,7 +108,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 
 	describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
 
-		before(function before(done) {
+		beforeEach(function before(done) {
 			clearNeo4j(function clear() {
 				done();
 			});
@@ -164,10 +164,10 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 
 		});
 
-		it ('should update an existing publisher', function test(done) {
+		it('should update an existing publisher', function test(done) {
 
-			dataService.getAllPublishers(function setup(err, models) {
-				var publisherCount = models.length;
+			var samplePublisherData = require('./fakes/publisherData.js').createOneFakePublisher();
+			dataService.savePublisher(samplePublisherData, function doneCreatingSampleData() {
 
 				var pub = publisherFactory.createPublisher(
 					TEST_NAME,
@@ -176,6 +176,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 					TEST_ISACTIVE,
 					TEST_DESCRIPTION2
 				);
+
 				dataService.savePublisher(pub, function verify(err, node) {
 
 					assert.ok(node);
@@ -187,11 +188,14 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 					assert.strictEqual(node.description, TEST_DESCRIPTION2);
 
 					dataService.getAllPublishers(function verify(err, models) {
-						assert.strictEqual(models.length, publisherCount);
+						assert.strictEqual(models.length, 1);
 						done();
 					});
 				});
+
+
 			});
+
 		});
 	});
 
@@ -222,7 +226,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 		it('should get a matching publisher', function test(done) {
 
 			dataService.getPublisher('Fantasy Flight Games', function verify(err, model) {
-
+				assert.notOk(err);
 				assert.ok(model);
 				assert.isTrue(model.name === 'Fantasy Flight Games');
 

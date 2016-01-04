@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports.createFakePublisherData = function createFake() {
-
     return [
         { name: 'Fantasy Flight Games', code: 'FFG' },
         { name: 'Wizards of the Coast', code: 'WOTC' },

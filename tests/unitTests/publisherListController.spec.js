@@ -9,7 +9,7 @@ describe('The Publisher List Controller behaves as follows --', function specify
 
     describe('When the system GETs a Publisher List --', function specifyGet() {
 
-        it('will return a 200 Status Code and the correct Publisher List when one exists', function checkSuccessful(done) {
+        it('will return a 200 Status Code and the correct Publisher List when one exists', function checkSuccessful(done) { //eslint-disable-line max-len
 
 			var samplePublisherData = require('./fakes/publisherData.js').createFakePublisherData();
             var sampleResource = {

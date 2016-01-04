@@ -8,30 +8,29 @@ var nodemon = require('gulp-nodemon');
 var gulpMocha = require('gulp-mocha');
 var env = require('gulp-env');
 var eslint = require('gulp-eslint');
-var exec = require('child_process').exec;
 var neo4jManager = require('./neo4jFunctions')();
 
 gulp.task('dev', function devTask() {
-	
+
 	env({ vars: { ENV: 'test' } });
-	
+
 	neo4jManager.switchToDevelopmentDb();
 
 	var watcher = gulp.watch(['app.js',
                               'gulpfile.js',
-							  'neo4jFunctions.js',
+                              'neo4jFunctions.js',
                               './lib/**/*.js',
                               './tests/**/*.js']);
-	
+
 	watcher.on('change', function actOnChange() {
 		gulp.src(['./lib/**/*.js', './tests/**/*.js'])
 			.pipe(eslint())
 			.pipe(eslint.format());
-			
+
 		gulp.src('tests/unitTests/*.js', { read: false })
 			.pipe(gulpMocha());
 	});
-		
+
 	nodemon({
 		script: 'app.js',
 		ext: 'js',
@@ -44,47 +43,49 @@ gulp.task('dev', function devTask() {
 		console.log('Restarting');
 	})
 	.on('exit', function cleanUp() {
-		console.log('Cleaning up'); 
+		console.log('Cleaning up');
 	});
 
 });
 
-gulp.task('lint', function lintTask() {
-	return gulp.src(['gulpfile.js', './lib/**/*.js', './tests/**/*.js'])
-		.pipe(eslint())
-		.pipe(eslint.format());
+gulp.task('lint', function lintTask(done) {
+    done();
+
+//	return gulp.src(['gulpfile.js', './lib/**/*.js', './tests/**/*.js'])
+//		.pipe(eslint())
+//		.pipe(eslint.format());
 });
 
 gulp.task('integration', function integrationTestTask(done) {
 	env({ vars: { ENV: 'test' } });
-	
-	neo4jManager.switchToDevelopmentDb();
 
-	gulp.src('tests/integrationTests/*.js', { read: false })
-		.pipe(gulpMocha());
+	neo4jManager.switchToDevelopmentDb(null, function doneSwitching() {
+		gulp.src('tests/integrationTests/*.js', { read: false })
+			.pipe(gulpMocha());
+		done();
+	});
 
 });
 
 gulp.task('unit', function unitTestTask() {
-	env({ vars: { ENV: 'test' } });
-	
 	gulp.src('tests/unitTests/*.js', { read: false })
 		.pipe(gulpMocha());
 });
 
 gulp.task('data', function dataTestTask(done) {
-	
-	neo4jManager.switchToDevelopmentDb();
-	
-	gulp.src('tests/dataTests/*.spec.js', { read: false })
-		.pipe(gulpMocha());
+
+	neo4jManager.switchToDevelopmentDb(null, function doneSwitching() {
+		gulp.src('tests/dataTests/*.spec.js', { read: false })
+			.pipe(gulpMocha());
+		done();
+	});
 
 });
 
 gulp.task('default', function defaultTask() {
-	
+
 	neo4jManager.switchToDevelopmentDb();
-	
+
 	nodemon({
 		script: 'app.js',
 		ext: 'js',
@@ -99,9 +100,9 @@ gulp.task('default', function defaultTask() {
 });
 
 gulp.task('mantest', function manualTestTask() {
-	
+
 	neo4jManager.switchToDevelopmentDb();
-	
+
 	nodemon({
 		script: 'app.js',
 		ext: 'js',
@@ -115,4 +116,3 @@ gulp.task('mantest', function manualTestTask() {
 		console.log('Restarting');
 	});
 });
-
