@@ -88,7 +88,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 
 		});
 
-		it.only('will create nodes for all valid publishers', function testCreateMultipleNodes(done) {
+		it('will create nodes for all valid publishers', function testCreateMultipleNodes(done) {
 
 			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
 
