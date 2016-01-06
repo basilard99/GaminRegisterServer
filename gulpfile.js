@@ -69,12 +69,15 @@ gulp.task('unit', function unitTestTask() {
 });
 
 gulp.task('data', function dataTestTask(done) {
-	neo4jManager.switchToDevelopmentDb(null)
+/*	neo4jManager.switchToDevelopmentDb(null)
                 .then(function doneSwitching() {
                     gulp.src('tests/dataTests/*.spec.js', { read: false })
                         .pipe(gulpMocha());
                     done();
-                });
+                });*/
+    gulp.src('tests/dataTests/*.spec.js', { read: false })
+        .pipe(gulpMocha());
+    done();
 });
 
 gulp.task('default', function defaultTask() {

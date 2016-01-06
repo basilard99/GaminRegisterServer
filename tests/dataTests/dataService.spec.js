@@ -2,6 +2,7 @@
 
 var assert = require('chai').assert;
 var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
+var Promise = require('bluebird');
 var publisherFactory = require('../../lib/models/publisher.js');
 var dataService = require('../../lib/models/dataService.js').create(db, publisherFactory);
 
@@ -12,226 +13,196 @@ var TEST_ISACTIVE = 'false';
 var TEST_DESCRIPTION = 'TestDescription';
 var TEST_DESCRIPTION2 = 'TestDescription2';
 
-var addNonPublisherNode = function addNonPublisher(done) {
+var addNonPublisherNode = function addNonPublisher() {
+	return new Promise(function addNonPublisherPromise(resolve, reject) {
+		var dataToSave =  { name: 'NotImportant',
+							someValue: '22' };
 
-	var dataToSave =  { name: 'NotImportant',
-						someValue: '22' };
-
-	db.save(dataToSave, 'Dummy', function saveDone(err) {
-		if (err) {
-			throw err;
-		}
-
-		done();
+		db.save(dataToSave, 'Dummy', function saveDone(err) {
+			if (err) {
+				reject(err);
+			}
+			resolve(dataToSave);
+		});
 	});
-
 };
 
-var clearNeo4j = function clear(done) {
-	db.query('MATCH (n) DELETE (n)', function execute() {
-		done();
-	});
+var clearNeo4j = function clear() {
+	return new Promise(function deleteAllNodes(resolve, reject) {
+		db.query('MATCH (n) DELETE (n)', function deleteCompleted(err, result) {
+			if (err) {
+                reject(err);
+            }
+
+			resolve(result);
+		});
+	})
 };
 
 var addSinglePublisherNode = function addSingleNode(data) {
+	return new Promise(function addSinglePublisherPromise(resolve, reject) {
 
-	var dataToSave =  { name: data.name,
-						code: data.code,
-						webSite: data.webSite,
-						isActive: data.isActive,
-						description: data.description };
-	db.save(dataToSave, 'Publisher', function queryDone(err) {
-		if (err) {
-			throw err;
-		}
+		var dataToSave =  { name: data.name,
+							code: data.code,
+							webSite: data.webSite,
+							isActive: data.isActive,
+							description: data.description };
+
+		db.save(dataToSave, 'Publisher', function queryDone(err) {
+			if (err) {
+				reject(err);
+			}
+			resolve(dataToSave);
+		});
 	});
-
 };
 
-var addTestPublishers = function add(samplePublisherData, done) {
-
-	for (var i = 0; i < samplePublisherData.length; i++) {
-		addSinglePublisherNode(samplePublisherData[i], function doneAdding() {});
-    }
-
-	setTimeout(function timeoutExceeded() {
-		done();
-	}, 1500);
+var addTestPublishers = function addAsync(samplePublisherData) {
+	return new Promise(function addPromise(resolve, reject) {
+		var addPromises = [];
+		for (var i = 0; i < samplePublisherData.length; i++) {
+			addPromises.push(addSinglePublisherNode(samplePublisherData[i]));
+		}
+		Promise.all(addPromises).then(function cleanupAfterAllPublishers() { resolve(); });
+	});
 };
 
 describe('The Data Service will behave as follows --', function dataServiceTests() {
 
 	describe('when handling publisher lists', function publisherList() {
-		this.timeout(10000);
 
-		beforeEach(function before(done) {
-			clearNeo4j(function doneClearing() {
-				addNonPublisherNode(function doneAddingNonPublisher() {
-					done();
+		beforeEach(function beforeHandlingPublisherLists() {
+			return clearNeo4j()
+				.then(function successfullyCleared() {
+					return addNonPublisherNode();
 				});
-			});
 		});
 
-		it('will get only publisher nodes', function test(done) {
-
-			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
-			addTestPublishers(samplePublisherData, function doneAddingTestPublishers() {
-
-				dataService.getAllPublishers(function verify(err, models) {
-
-					// There are 3 test publishers created, plus one dummy node.
-					assert.isTrue(models.length === 3, 'length was: ' + models.length);
-					done();
-
-				});
-			});
-
-		});
-
-		it('will create nodes for all valid publishers', function testCreateMultipleNodes(done) {
-
+		it('will get only publisher nodes', function test() {
 			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
 
-			dataService.savePublisherList({ list: samplePublisherData }, function finishedSaving(err) {
-				setTimeout(function timeoutExceeded() {
-					assert.isUndefined(err);
-
-					dataService.getAllPublishers(function verify(err, models) {
-						// There are 3 test publishers created, plus one dummy node.
-						assert.isTrue(models.length === 3, 'length was: ' + models.length);
-						done();
+			return addTestPublishers(samplePublisherData)
+					.then(function getPublishersFromDb() {
+						console.log('getting publishers');
+						return dataService.getAllPublishers();
+					}).then(function verifyPublishers(models) {
+						assert.isTrue(models.length === 3, 'Length was: ' + models.length);
 					});
-				}, 1500);
-			});
+		});
+
+		it('will create nodes for all valid publishers', function testCreateMultipleNodes() {
+
+			var samplePublisherData = require('./fakes/publisherData.js').createManyFakePublishers();
+
+			return dataService.savePublisherList({ list: samplePublisherData })
+					.then(function finishedSaving() {
+						return dataService.getAllPublishers();
+					}).then(function verify(models) {
+						assert.isTrue(models.length === 3, 'length was: ' + models.length);
+					});
 		});
 	});
 
 	describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
 
-		beforeEach(function before(done) {
-			clearNeo4j(function clear() {
-				done();
-			});
+		beforeEach(function beforeSavingAPublisherTests() {
+			return clearNeo4j();
 		});
 
-		it('should return an error if publisher is not truthy',
-			function test(done) {
-				dataService.savePublisher(null, function verify(err, node) {
-					assert.strictEqual(err.message, 'Publisher is required');
-					assert.notOk(node);
-					done();
-				}
-			);
+		it('should return an error if publisher is not truthy', function test() {
+			return dataService.savePublisher(null)
+					   .then(function successfulSave() {
+								throw new Error('Publisher should not have saved');
+							},
+							function failedSave(err) {
+								assert.strictEqual(err.message, 'Publisher is required');
+							});
 		});
 
-		it('should return an error if publisher.name is not truthy',
-			function test(done) {
-				var testData = { name: '' };
+		it('should return an error if publisher.name is not truthy', function test() {
+			var testData = { name: '' };
 
-				dataService.savePublisher(testData,
-					function verify(err, node) {
-						assert.strictEqual(
-							err.message,
-							'Publisher Name is required'
-						);
-						assert.notOk(node);
-						done();
-					}
-			);
+			dataService.savePublisher(testData)
+					   .then(function successfulSave() {
+								throw new Error('Publisher should not have saved'); },
+							function failedSave(err) {
+								assert.strictEqual(err.message, 'Publisher Name is required');
+							});
 		});
 
-		it('should save a new publisher', function test(done) {
-
-			var pub = publisherFactory.createPublisher(
+		it('should save a new publisher', function test() {
+			var testData = publisherFactory.createPublisher(
 				TEST_NAME,
 				TEST_WEBSITE,
 				TEST_CODE,
 				TEST_ISACTIVE,
 				TEST_DESCRIPTION
 			);
-			dataService.savePublisher(pub, function verify(err, node) {
 
-				assert.ok(node);
-
-				assert.strictEqual(node.name, TEST_NAME);
-				assert.strictEqual(node.webSite, TEST_WEBSITE);
-				assert.strictEqual(node.code, TEST_CODE);
-				assert.strictEqual(node.isActive, TEST_ISACTIVE);
-				assert.strictEqual(node.description, TEST_DESCRIPTION);
-
-				done();
-			});
-
+			return dataService.savePublisher(testData)
+					.then(function successfulSave(node) {
+						assert.ok(node);
+						assert.strictEqual(node.name, TEST_NAME);
+						assert.strictEqual(node.webSite, TEST_WEBSITE);
+						assert.strictEqual(node.code, TEST_CODE);
+						assert.strictEqual(node.isActive, TEST_ISACTIVE);
+						assert.strictEqual(node.description, TEST_DESCRIPTION);
+					});
 		});
 
-		it('should update an existing publisher', function test(done) {
+		it('should update an existing publisher', function test() {
+			var testData = require('./fakes/publisherData.js').createOneFakePublisher();
 
-			var samplePublisherData = require('./fakes/publisherData.js').createOneFakePublisher();
-			dataService.savePublisher(samplePublisherData, function doneCreatingSampleData() {
+			return dataService.savePublisher(testData[0])
+					   .then(function successfulSave(node) {
 
-				var pub = publisherFactory.createPublisher(
-					TEST_NAME,
-					TEST_WEBSITE,
-					TEST_CODE,
-					TEST_ISACTIVE,
-					TEST_DESCRIPTION2
-				);
+							var pub = publisherFactory.createPublisher(testData[0].name,
+																	   testData[0].webSite,
+																	   testData[0].code,
+																	   testData[0].isActive,
+																	   TEST_DESCRIPTION2);
 
-				dataService.savePublisher(pub, function verify(err, node) {
+							return dataService.savePublisher(pub);
+					   }).then(function getAllPublishersToVerify() {
+							return dataService.getAllPublishers();
+					   }).then(function verify(models) {
+							assert.isTrue(models.length === 1, 'Length was: ' + models.length);
 
-					assert.ok(node);
-
-					assert.strictEqual(node.name, TEST_NAME);
-					assert.strictEqual(node.webSite, TEST_WEBSITE);
-					assert.strictEqual(node.code, TEST_CODE);
-					assert.strictEqual(node.isActive, TEST_ISACTIVE);
-					assert.strictEqual(node.description, TEST_DESCRIPTION2);
-
-					dataService.getAllPublishers(function verify(err, models) {
-						assert.strictEqual(models.length, 1);
-						done();
-					});
-				});
-
-
-			});
-
+							assert.strictEqual(models[0].name, testData[0].name);
+							assert.strictEqual(models[0].webSite, testData[0].webSite);
+							assert.strictEqual(models[0].code, testData[0].code);
+							assert.strictEqual(models[0].isActive, testData[0].isActive);
+							assert.strictEqual(models[0].description, TEST_DESCRIPTION2);
+					   });
 		});
 	});
 
 	describe('getting a publisher by name (NEEDS REVIEWED)', function describe() {
 
 		var samplePublisherData = require('./fakes/publisherData.js').createOneFakePublisher();
-		before(function before(done) {
-			clearNeo4j(function clear() {
-				addTestPublishers(samplePublisherData, function cb() {
-					done();
+
+		beforeEach(function beforeGettingPublisherByName() {
+			return clearNeo4j()
+				.then(function successfullyCleared() {
+					return addTestPublishers(samplePublisherData);
 				});
-			});
 		});
 
-		it('should return an error if publisher.name is not truthy',
-			function test(done) {
-				dataService.getPublisher('', function verify(err, model) {
-					assert.strictEqual(
-						err.message,
-						'Publisher Name is required'
-					);
-					assert.notOk(model);
-					done();
-				}
-			);
+		it('should return an error if publisher.name is not truthy', function test() {
+			return dataService.getPublisher('')
+				.then(function getSucceeded(model) {
+					throw new Error('Publisher should not have been retrieved');
+				}, function getFailed(err) {
+					assert.strictEqual(err.message, 'Publisher Name is required');
+				});
 		});
 
-		it('should get a matching publisher', function test(done) {
-
-			dataService.getPublisher('Fantasy Flight Games', function verify(err, model) {
-				assert.notOk(err);
-				assert.ok(model);
-				assert.isTrue(model.name === 'Fantasy Flight Games');
-
-				done();
-			});
+		it('should get a matching publisher', function test() {
+			return dataService.getPublisher('Fantasy Flight Games')
+				.then(function verify(model) {
+					assert.ok(model);
+					assert.isTrue(model.name === 'Fantasy Flight Games');
+				});
 		});
 	});
 
