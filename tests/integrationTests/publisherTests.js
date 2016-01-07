@@ -23,18 +23,17 @@ describe('Publisher Integration Tests', function describe() {
 		});
 	});
 
-	it('Should allow a publisher to be saved and return a publisher id',
-		function test(done) {
-			var testData = { name: 'ITPublisher' };
+	it('Should allow a publisher to be saved and return a publisher id', function test(done) {
+		var testData = { name: 'ITPublisher' };
 
-			request
-				.post('/api/publishers')
-				.send(testData)
-				.expect(200)
-				.end(function end(err, results) {
-					results.body.should.have.property('id');
-					done();
-				});
+		request
+			.post('/api/publishers')
+			.send(testData)
+			.expect(200)
+			.end(function end(err, results) {
+				results.body.should.have.property('id');
+				done();
+			});
 		}
 	);
 
@@ -111,15 +110,13 @@ describe('Publisher Integration Tests', function describe() {
 		request
 			.post('/api/publishers')
 			.send(testData)
-			.end(function end(err, results) {
-				results;
+			.end(function end() {
 				testData.webSite = 'TestWebSiteNew';
 				request
 					.put('/api/publishers/' + testData.name)
 					.send(testData)
 					.expect(201)
-					.end(function end(err, results) {
-						results;
+					.end(function end(err) {
 						if (err) {
 							should.fail(err.message);
 						}

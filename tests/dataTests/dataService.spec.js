@@ -36,7 +36,7 @@ var clearNeo4j = function clear() {
 
 			resolve(result);
 		});
-	})
+	});
 };
 
 var addSinglePublisherNode = function addSingleNode(data) {
@@ -58,12 +58,14 @@ var addSinglePublisherNode = function addSingleNode(data) {
 };
 
 var addTestPublishers = function addAsync(samplePublisherData) {
-	return new Promise(function addPromise(resolve, reject) {
+	return new Promise(function addPromise(resolve) {
 		var addPromises = [];
 		for (var i = 0; i < samplePublisherData.length; i++) {
 			addPromises.push(addSinglePublisherNode(samplePublisherData[i]));
 		}
-		Promise.all(addPromises).then(function cleanupAfterAllPublishers() { resolve(); });
+		Promise.all(addPromises).then(function cleanupAfterAllPublishers() {
+			resolve();
+		});
 	});
 };
 
@@ -111,23 +113,22 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 
 		it('should return an error if publisher is not truthy', function test() {
 			return dataService.savePublisher(null)
-					   .then(function successfulSave() {
-								throw new Error('Publisher should not have saved');
-							},
-							function failedSave(err) {
-								assert.strictEqual(err.message, 'Publisher is required');
-							});
+						.then(function successfulSave() {
+							throw new Error('Publisher should not have saved');
+						}, function failedSave(err) {
+							assert.strictEqual(err.message, 'Publisher is required');
+						});
 		});
 
 		it('should return an error if publisher.name is not truthy', function test() {
 			var testData = { name: '' };
 
 			dataService.savePublisher(testData)
-					   .then(function successfulSave() {
-								throw new Error('Publisher should not have saved'); },
-							function failedSave(err) {
-								assert.strictEqual(err.message, 'Publisher Name is required');
-							});
+				.then(function successfulSave() {
+					throw new Error('Publisher should not have saved');
+				}, function failedSave(err) {
+					assert.strictEqual(err.message, 'Publisher Name is required');
+				});
 		});
 
 		it('should save a new publisher', function test() {
@@ -154,18 +155,17 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 			var testData = require('./fakes/publisherData.js').createOneFakePublisher();
 
 			return dataService.savePublisher(testData[0])
-					   .then(function successfulSave(node) {
-
+						.then(function successfulSave() {
 							var pub = publisherFactory.createPublisher(testData[0].name,
-																	   testData[0].webSite,
-																	   testData[0].code,
-																	   testData[0].isActive,
-																	   TEST_DESCRIPTION2);
+                                                                       testData[0].webSite,
+                                                                       testData[0].code,
+                                                                       testData[0].isActive,
+                                                                       TEST_DESCRIPTION2);
 
 							return dataService.savePublisher(pub);
-					   }).then(function getAllPublishersToVerify() {
+						}).then(function getAllPublishersToVerify() {
 							return dataService.getAllPublishers();
-					   }).then(function verify(models) {
+						}).then(function verify(models) {
 							assert.isTrue(models.length === 1, 'Length was: ' + models.length);
 
 							assert.strictEqual(models[0].name, testData[0].name);
@@ -173,7 +173,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 							assert.strictEqual(models[0].code, testData[0].code);
 							assert.strictEqual(models[0].isActive, testData[0].isActive);
 							assert.strictEqual(models[0].description, TEST_DESCRIPTION2);
-					   });
+						});
 		});
 	});
 
@@ -190,7 +190,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 
 		it('should return an error if publisher.name is not truthy', function test() {
 			return dataService.getPublisher('')
-				.then(function getSucceeded(model) {
+				.then(function getSucceeded() {
 					throw new Error('Publisher should not have been retrieved');
 				}, function getFailed(err) {
 					assert.strictEqual(err.message, 'Publisher Name is required');
