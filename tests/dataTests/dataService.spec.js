@@ -5,6 +5,7 @@ var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
 var Promise = require('bluebird');
 var publisherFactory = require('../../lib/models/publisher.js');
 var dataService = require('../../lib/models/dataService.js').create(db, publisherFactory);
+var neo4jManager = require('../.././neo4jFunctions').create();
 
 var TEST_NAME = 'TestName';
 var TEST_WEBSITE = 'TestWebSite';
@@ -13,48 +14,14 @@ var TEST_ISACTIVE = 'false';
 var TEST_DESCRIPTION = 'TestDescription';
 var TEST_DESCRIPTION2 = 'TestDescription2';
 
-var addNonPublisherNode = function addNonPublisher() {
-	return new Promise(function addNonPublisherPromise(resolve, reject) {
-		var dataToSave =  { name: 'NotImportant',
-							someValue: '22' };
-
-		db.save(dataToSave, 'Dummy', function saveDone(err) {
-			if (err) {
-				reject(err);
-			}
-			resolve(dataToSave);
-		});
-	});
-};
-
-var clearNeo4j = function clear() {
-	return new Promise(function deleteAllNodes(resolve, reject) {
-		db.query('MATCH (n) DELETE (n)', function deleteCompleted(err, result) {
-			if (err) {
-                reject(err);
-            }
-
-			resolve(result);
-		});
-	});
-};
-
 var addSinglePublisherNode = function addSingleNode(data) {
-	return new Promise(function addSinglePublisherPromise(resolve, reject) {
+	var dataToSave =  { name: data.name,
+						code: data.code,
+						webSite: data.webSite,
+						isActive: data.isActive,
+						description: data.description };
 
-		var dataToSave =  { name: data.name,
-							code: data.code,
-							webSite: data.webSite,
-							isActive: data.isActive,
-							description: data.description };
-
-		db.save(dataToSave, 'Publisher', function queryDone(err) {
-			if (err) {
-				reject(err);
-			}
-			resolve(dataToSave);
-		});
-	});
+	return neo4jManager.addNode(dataToSave, 'Publisher');
 };
 
 var addTestPublishers = function addAsync(samplePublisherData) {
@@ -74,10 +41,10 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 	describe('when handling publisher lists', function publisherList() {
 
 		beforeEach(function beforeHandlingPublisherLists() {
-			return clearNeo4j()
-				.then(function successfullyCleared() {
-					return addNonPublisherNode();
-				});
+			return neo4jManager.clearNeo4j()
+					.then(function successfullyCleared() {
+						return neo4jManager.addDummyNode();
+					});
 		});
 
 		it('will get only publisher nodes', function test() {
@@ -85,7 +52,6 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 
 			return addTestPublishers(samplePublisherData)
 					.then(function getPublishersFromDb() {
-						console.log('getting publishers');
 						return dataService.getAllPublishers();
 					}).then(function verifyPublishers(models) {
 						assert.isTrue(models.length === 3, 'Length was: ' + models.length);
@@ -108,7 +74,7 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 	describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
 
 		beforeEach(function beforeSavingAPublisherTests() {
-			return clearNeo4j();
+			return neo4jManager.clearNeo4j();
 		});
 
 		it('should return an error if publisher is not truthy', function test() {
@@ -182,10 +148,10 @@ describe('The Data Service will behave as follows --', function dataServiceTests
 		var samplePublisherData = require('./fakes/publisherData.js').createOneFakePublisher();
 
 		beforeEach(function beforeGettingPublisherByName() {
-			return clearNeo4j()
-				.then(function successfullyCleared() {
-					return addTestPublishers(samplePublisherData);
-				});
+			return neo4jManager.clearNeo4j()
+					.then(function successfullyCleared() {
+						return addTestPublishers(samplePublisherData);
+					});
 		});
 
 		it('should return an error if publisher.name is not truthy', function test() {

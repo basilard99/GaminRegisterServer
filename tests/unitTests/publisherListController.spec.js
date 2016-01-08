@@ -9,7 +9,7 @@ describe('The Publisher List Controller behaves as follows --', function specify
 
     describe('When the system GETs a Publisher List --', function specifyGet() {
 
-        it('will return a 200 Status Code and the correct Publisher List when one exists', function checkSuccessful(done) { //eslint-disable-line max-len
+        it('will return a 200 Status Code and the correct Publisher List when one exists', function checkSuccessful() { //eslint-disable-line max-len
 
 			var samplePublisherData = require('./fakes/publisherData.js').createFakePublisherData();
             var sampleResource = {
@@ -21,8 +21,10 @@ describe('The Publisher List Controller behaves as follows --', function specify
             };
 
 			var dataService = {
-				getAllPublishers: function mock(callback) {
-					callback(null, samplePublisherData);
+				getAllPublishers: function mock() {
+					return new Promise(function mockPromise(resolve) {
+						resolve(samplePublisherData);
+					});
 				}
 			};
 
@@ -39,25 +41,29 @@ describe('The Publisher List Controller behaves as follows --', function specify
 			var cut = require(CUT_PATH)(dataService);
 			cut.get(req, res);
 
-			assert.isTrue(
-				res.status.calledWith(200),
-				'Unexpected status code'
-			);
-			assert.isTrue(
-				res.json.calledWith(sampleResource),
-				'Unexpected response: ' + res.json.args[0][0]
-			);
-			assert.isTrue(res.json.calledOnce);
-            done();
+            setTimeout(function timeoutExceeded() {
+                assert.isTrue(
+                    res.status.calledWith(200),
+                    'Unexpected status code'
+                );
+                assert.isTrue(
+                    res.json.calledWith(sampleResource),
+                    'Unexpected response: ' + res.json.args[0][0]
+                );
+                assert.isTrue(res.json.calledOnce);
+
+            });
         });
 
-        it ('will return a 404 if no Publisher List is found', function checkNoPublisherList(done) {
+        it ('will return a 404 if no Publisher List is found', function checkNoPublisherList() {
 
 			var sampleEmptyPublisherData = require('./fakes/publisherData.js').createEmptyFakePublisherData();
 
 			var dataService = {
-				getAllPublishers: function mock(callback) {
-					callback(null, sampleEmptyPublisherData);
+				getAllPublishers: function mock() {
+					return new Promise(function mockPromise(resolve) {
+						resolve(sampleEmptyPublisherData);
+					});
 				}
 			};
 
@@ -74,13 +80,13 @@ describe('The Publisher List Controller behaves as follows --', function specify
 			var cut = require(CUT_PATH)(dataService);
 			cut.get(req, res);
 
-			assert.isTrue(
-				res.status.calledWith(404),
-				'Unexpected status code'
-			);
-			assert.isTrue(res.send.calledOnce);
-
-            done();
+            setTimeout(function timeoutExceeded() {
+                assert.isTrue(
+                    res.status.calledWith(404),
+                    'Unexpected status code'
+                );
+                assert.isTrue(res.send.calledOnce);
+            }, 1500);
         });
     });
 

@@ -3,24 +3,15 @@
 var should = require('should');
 var app = require('../../app.js');
 var request = require('supertest')(app);
-
-var clearNeo = function clear(done) {
-	var db = require('seraph')({
-		server: 'http://localhost:7474',
-		name: 'neo4j',
-		pass: 'pass'
-	});
-	db.query('MATCH (n) DELETE (n)', function deleteAll() {
-		done();
-	});
-};
+var neo4jManager = require('../.././neo4jFunctions').create();
 
 describe('Publisher Integration Tests', function describe() {
 
 	beforeEach(function beforeEach(done) {
-		clearNeo(function clear() {
-			done();
-		});
+		neo4jManager.clearNeo4j()
+			.then(function neo4jClearedSuccessfully() {
+				done();
+			});
 	});
 
 	it('Should allow a publisher to be saved and return a publisher id', function test(done) {
@@ -34,8 +25,7 @@ describe('Publisher Integration Tests', function describe() {
 				results.body.should.have.property('id');
 				done();
 			});
-		}
-	);
+	});
 
 	it('should allow a single publisher to be retrieved', function test(done) {
 		var testData = { name: 'ITPublisher' };
@@ -131,15 +121,13 @@ describe('Publisher Integration Tests', function describe() {
 		request
 			.patch('/api/publishers')
 			.send(testData)
-			.end(function end(err, results) {
-				results;
+			.end(function end() {
 				testData.webSite = 'TestWebSiteNew';
 				request
 					.put('/api/publishers/' + testData.name)
 					.send(testData)
 					.expect(201)
-					.end(function end(err, results) {
-						results;
+					.end(function end(err) {
 						if (err) {
 							should.fail(err.message);
 						}
