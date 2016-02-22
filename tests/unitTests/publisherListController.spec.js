@@ -55,7 +55,7 @@ describe('The Publisher List Controller behaves as follows --', function specify
             });
         });
 
-        it ('will return a 404 if no Publisher List is found', function checkNoPublisherList() {
+        it('will return a 404 if no Publisher List is found', function checkNoPublisherList() {
 
 			var sampleEmptyPublisherData = require('./fakes/publisherData.js').createEmptyFakePublisherData();
 
@@ -88,6 +88,89 @@ describe('The Publisher List Controller behaves as follows --', function specify
                 assert.isTrue(res.send.calledOnce);
             }, 1500);
         });
+    });
+
+    describe('When the system PUTs a Publisher List --', function specifyPut() {
+
+        it('will return a 201 Status Code and the correct URI after put', function checkSuccessful(done) {
+            var dataService = {
+                savePublisherList: function mock() {
+					return new Promise(function mockPromise(resolve) {
+						resolve();
+					});
+                }
+            };
+
+			var req = {
+				body: {
+                    list: [
+                           { name: 'TestName1' },
+                           { name: 'TestName2' },
+                           { name: 'TestName3' }
+                        ]
+                }
+			};
+
+			var res = {
+				status: sinon.spy(),
+				json: sinon.spy()
+			};
+
+			var cut = require(CUT_PATH)(dataService);
+			cut.put(req, res);
+
+            setTimeout(function timeoutExceeded() {
+                assert.isTrue(
+                    res.status.calledWith(201),
+                    'Unexpected status code: ' + res.status.args[0]
+                );
+
+                assert.isTrue(
+                    res.json.calledWith({ uri: 'publisherList/' }),
+                    'Unexpected response: ' + res.json.args[0][0]
+                );
+
+                assert.isTrue(res.json.calledOnce);
+                done();
+            }, 1000);
+        });
+
+        it('will return a 500 Status Code if put fails', function checkSuccessful(done) {
+            var dataService = {
+                savePublisherList: function mock() {
+					return new Promise(function mockPromise(resolve, reject) {
+						reject('Test Error');
+					});
+                }
+            };
+
+			var req = {
+				body: {
+                    list: [
+                           { name: 'TestName1' },
+                           { name: 'TestName2' },
+                           { name: 'TestName3' }
+                        ]
+                }
+			};
+
+			var res = {
+				status: sinon.spy(),
+				json: sinon.spy()
+			};
+
+			var cut = require(CUT_PATH)(dataService);
+			cut.put(req, res);
+
+            setTimeout(function timeoutExceeded() {
+                assert.isTrue(
+                    res.status.calledWith(500),
+                    'Unexpected status code: ' + res.status.args[0]
+                );
+                done();
+            }, 1000);
+        });
+
     });
 
 });

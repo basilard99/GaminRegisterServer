@@ -11,6 +11,9 @@ describe('Publisher Integration Tests', function describe() {
 		neo4jManager.clearNeo4j()
 			.then(function neo4jClearedSuccessfully() {
 				done();
+			}, function neo4jFailedToClear(err) {
+				console.log(err);
+				done();
 			});
 	});
 
@@ -18,7 +21,7 @@ describe('Publisher Integration Tests', function describe() {
 		var testData = { name: 'ITPublisher' };
 
 		request
-			.post('/api/publishers')
+			.post('/api/publisherList')
 			.send(testData)
 			.expect(200)
 			.end(function end(err, results) {
@@ -31,7 +34,7 @@ describe('Publisher Integration Tests', function describe() {
 		var testData = { name: 'ITPublisher' };
 
 		request
-			.post('/api/publishers')
+			.post('/api/publisherList')
 			.send(testData)
 			.end(function end(err) {
 				if (err) {
@@ -40,7 +43,7 @@ describe('Publisher Integration Tests', function describe() {
 				}
 
 				request
-					.get('/api/publishers/' + testData.name)
+					.get('/api/publisherList/' + testData.name)
 					.expect(200)
 					.end(function end(err, results) {
 						if (err) {
@@ -60,7 +63,7 @@ describe('Publisher Integration Tests', function describe() {
 		var testData2 = { name: 'ITPublisher2' };
 
 		request
-			.post('/api/publishers')
+			.post('/api/publisherList')
 			.send(testData)
 			.end(function end(err) {
 
@@ -69,7 +72,7 @@ describe('Publisher Integration Tests', function describe() {
 					done();
 				}
 
-				request.post('/api/publishers')
+				request.post('/api/publisherList')
 					.send(testData2)
 					.end(function end(err) {
 
@@ -80,7 +83,7 @@ describe('Publisher Integration Tests', function describe() {
 						}
 
 						request
-							.get('/api/publishers/')
+							.get('/api/publisherList')
 							.expect(200)
 							.end(function end(err, results) {
 								if (err) {
@@ -98,12 +101,12 @@ describe('Publisher Integration Tests', function describe() {
 		var testData = { name: 'ITPublisher', webSite: 'TestWebSite' };
 
 		request
-			.post('/api/publishers')
+			.post('/api/publisherList')
 			.send(testData)
 			.end(function end() {
 				testData.webSite = 'TestWebSiteNew';
 				request
-					.put('/api/publishers/' + testData.name)
+					.put('/api/publisherList/' + testData.name)
 					.send(testData)
 					.expect(201)
 					.end(function end(err) {
@@ -124,13 +127,40 @@ describe('Publisher Integration Tests', function describe() {
 			.end(function end() {
 				testData.webSite = 'TestWebSiteNew';
 				request
-					.put('/api/publishers/' + testData.name)
+					.put('/api/publisherList/' + testData.name)
 					.send(testData)
 					.expect(201)
 					.end(function end(err) {
 						if (err) {
 							should.fail(err.message);
 						}
+						done();
+					});
+			});
+	});
+
+	it('should allow putting a publisher list', function test(done) {
+		var testData = { list: [
+									{ name: 'ITPublisher', code: 'Pub1' },
+									{ name: 'ITPublisher2', code: 'Pub2' }
+                               ]
+		};
+
+		request
+			.put('/api/publisherList')
+			.send(testData)
+			.expect(201)
+			.end(function end() {
+				request
+					.get('/api/publisherList')
+					.expect(200)
+					.end(function end(err, results) {
+						if (err) {
+							should.fail(err.message);
+							done();
+						}
+
+						should.equal(results.body.list.length, 2);
 						done();
 					});
 			});
