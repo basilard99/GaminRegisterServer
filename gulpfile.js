@@ -106,7 +106,7 @@ gulp.task('mantest', function manualTestTask() {
 		ext: 'js',
 		env: {
 			ENV: 'test',
-			PORT: 8000
+			PORT: 8100
 		},
 		ignore: ['./node_modules/**']
 	})
