@@ -27,6 +27,7 @@
     "gulp-watch": "^4.3.4",
     "methods": "^1.1.1",
     "mocha": "^2.2.5",
+    "monitorctrlc": "^1.0.1",
     "should": "^7.0.2",
     "sinon": "^1.15.4",
     "supertest": "^1.0.1"

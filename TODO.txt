@@ -1,0 +1,2 @@
+Put publisher list should replace all items, not append
+Should not be 'posting' a publisher

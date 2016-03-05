@@ -1,12 +1,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var neo4Jport = (process.env.ENV === 'test') ? '7474' : '9494';
-
 var app = express();
 var port = process.env.PORT || 3000;
 
-var publisherRouter = require('./lib/routes/publisherRoutes')(neo4Jport);
+var publisherRouter = require('./lib/routes/publisherRoutes')(7474);
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -19,8 +17,8 @@ app.get('/', function(req, res) {
 
 app.server = app.listen(port, function() {
 	console.log('Gulp is running my app on port: ' + port);
-	console.log('Neo4j is running on port: ' + neo4Jport);
+	console.log('Neo4j is running on port: 7474');
 });
 
-		
+
 module.exports = app;
