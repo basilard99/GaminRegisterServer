@@ -3,7 +3,7 @@
 var assert = require('chai').assert;
 var valueTypes = require('../../lib/models/valueTypes.js');
 
-describe.only('NameObj - ', function nameObjTestSuite() {
+describe('NameObj - ', function nameObjTestSuite() {
 
     it('When created with nothing will throw an exception', function testUndefined() {
         assert.throws(function assertCheck() {
