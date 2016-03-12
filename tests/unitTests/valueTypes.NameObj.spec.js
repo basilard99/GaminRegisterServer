@@ -5,6 +5,12 @@ var valueTypes = require('../../lib/models/valueTypes.js');
 
 describe('NameObj - ', function nameObjTestSuite() {
 
+    it('When created with a non-string object will throw an exception', function testUndefined() {
+        assert.throws(function assertCheck() {
+            valueTypes.createName(5);
+        }, 'The name value must be defined and be a string');
+    });
+
     it('When created with nothing will throw an exception', function testUndefined() {
         assert.throws(function assertCheck() {
             valueTypes.createName();
@@ -44,7 +50,7 @@ describe('NameObj - ', function nameObjTestSuite() {
     it('When created with a 31 letter string will throw an exception', function testTooLong() {
         assert.throws(function assertCheck() {
             valueTypes.createName('abcdegfhijklmnopqrstuvwxyz12345');
-        }, 'The name value cannot contain more than 3 characters');
+        }, 'The name value cannot contain more than 30 characters');
     });
 
     it('When created with a 3 letter string will allow reading of name', function testMinimumAllowed() {
@@ -53,8 +59,8 @@ describe('NameObj - ', function nameObjTestSuite() {
     });
 
     it('When created with a 30 letter string will allow reading of name', function testMaximumAllowed() {
-        var cut = valueTypes.createName('abcdegfhijklmnopqrstuvwxyz1234');
-        assert.equal(cut.name, 'abcdegfhijklmnopqrstuvwxyz1234');
+        var cut = valueTypes.createName('abcdefghijklmnopqrstuvwxyz1234');
+        assert.equal(cut.name, 'abcdefghijklmnopqrstuvwxyz1234');
     });
 
     it('Should not allow modification of object', function testInternalAccess() {
