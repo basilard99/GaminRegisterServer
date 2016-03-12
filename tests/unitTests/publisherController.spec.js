@@ -32,7 +32,8 @@ describe('Publisher Controller Tests:', function publisherController() {
             publisherController.post(req, res);
 
             assert.isTrue(res.status.calledWith(400), 'Unexpected status code');
-            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'), 'Unexpected response');
+            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'),
+                                              'Unexpected response');
             assert.isTrue(res.send.calledOnce);
         });
 
@@ -195,7 +196,8 @@ describe('Publisher Controller Tests:', function publisherController() {
             publisherController.put(req, res);
 
             assert.isTrue(res.status.calledWith(400), 'Unexpected status code');
-            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'), 'Unexpected response');
+            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'),
+                                              'Unexpected response');
             assert.isTrue(res.send.calledOnce);
         });
 
@@ -294,7 +296,8 @@ describe('Publisher Controller Tests:', function publisherController() {
             publisherController.patch(req, res);
 
             assert.isTrue(res.status.calledWith(400),'Unexpected status code');
-            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'), 'Unexpected response');
+            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'),
+                                              'Unexpected response');
             assert.isTrue(res.send.calledOnce);
         });
 

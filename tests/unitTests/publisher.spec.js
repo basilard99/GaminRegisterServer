@@ -4,7 +4,6 @@ var assert = require('chai').assert;
 var publisherFactory = require('../../lib/models/publisher.js');
 
 var TEST_NAME = 'TestName';
-var TEST_NAME2 = 'TestName2';
 var TEST_WEBSITE = 'www.TestWebSite.com';
 var TEST_CODE = 'TWS';
 var TEST_ISACTIVE = false;
