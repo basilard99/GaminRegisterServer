@@ -3,7 +3,7 @@
 var assert = require('chai').assert;
 var valueTypes = require('../../lib/models/valueTypes.js');
 
-describe('CodeObj - ', function codeObjTestSuite() {
+describe.only('CodeObj - ', function codeObjTestSuite() {
 
     it('When created with a non-string object will throw an exception', function testUndefined() {
         assert.throws(function assertCheck() {
@@ -49,18 +49,18 @@ describe('CodeObj - ', function codeObjTestSuite() {
 
     it('When created with a 2 letter string will allow reading of name', function testMinimumAllowed() {
         var cut = valueTypes.createCode('ab');
-        assert.equal(cut.code, 'ab');
+        assert.equal(cut.value, 'ab');
     });
 
     it('When created with a 6 letter string will allow reading of name', function testMaximumAllowed() {
         var cut = valueTypes.createCode('abcdef');
-        assert.equal(cut.code, 'abcdef');
+        assert.equal(cut.value, 'abcdef');
     });
 
     it('Should not allow modification of object', function testInternalAccess() {
         var cut = valueTypes.createCode('abc');
         assert.throws(function assertCheck() {
-            cut.name = 'test';
+            cut.value = 'test';
         }, TypeError);
     });
 });
