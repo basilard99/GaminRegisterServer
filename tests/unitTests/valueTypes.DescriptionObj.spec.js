@@ -13,22 +13,22 @@ describe('DescriptionObj - ', function descriptionObjTestSuite() {
 
     it('When created with nothing will reset to an empty string', function testUndefined() {
         var cut = valueTypes.createDescription();
-        assert.equal(cut.description, '');
+        assert.equal(cut.value, '');
     });
 
     it('When created with undefined will reset to an empty string', function testUndefined() {
         var cut = valueTypes.createDescription(undefined);
-        assert.equal(cut.description, '');
+        assert.equal(cut.value, '');
     });
 
     it('When created with null will reset to an empty string', function testNull() {
         var cut = valueTypes.createDescription(null);
-        assert.equal(cut.description, '');
+        assert.equal(cut.value, '');
     });
 
     it('When created with an empty string will allow reading of description', function testEmpty() {
         var cut = valueTypes.createDescription('');
-        assert.equal(cut.description, '');
+        assert.equal(cut.value, '');
     });
 
     it('When created with a 501 letter string will throw an exception', function testTooLong() {
@@ -41,18 +41,18 @@ describe('DescriptionObj - ', function descriptionObjTestSuite() {
 
     it('When created with a 500 letter string will allow reading of description', function testMinimumAllowed() {
         var cut = valueTypes.createDescription('abc');
-        assert.equal(cut.description, 'abc');
+        assert.equal(cut.value, 'abc');
     });
 
     it('When created with an empty string will allow reading of description', function testMinimumAllowed() {
         var cut = valueTypes.createDescription('abc');
-        assert.equal(cut.description, 'abc');
+        assert.equal(cut.value, 'abc');
     });
 
     it('Should not allow modification of object', function testInternalAccess() {
         var cut = valueTypes.createDescription('abc');
         assert.throws(function assertCheck() {
-            cut.description = 'test';
+            cut.value = 'test';
         }, TypeError);
     });
 });
