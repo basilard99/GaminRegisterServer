@@ -54,7 +54,6 @@ gulp.task('lint', function lintTask() {
 });
 
 gulp.task('integration', function integrationTestTask(done) {
-	env({ vars: { ENV: 'test' } });
 	neo4jManager.switchToDevelopmentDb(null)
                 .then(function doneSwitching() {
                     gulp.src('tests/integrationTests/*.js', { read: false })
@@ -69,15 +68,12 @@ gulp.task('unit', function unitTestTask() {
 });
 
 gulp.task('data', function dataTestTask(done) {
-/*	neo4jManager.switchToDevelopmentDb(null)
+	neo4jManager.switchToDevelopmentDb(null)
                 .then(function doneSwitching() {
                     gulp.src('tests/dataTests/*.spec.js', { read: false })
                         .pipe(gulpMocha());
                     done();
-                });*/
-    gulp.src('tests/dataTests/*.spec.js', { read: false })
-        .pipe(gulpMocha());
-    done();
+                });
 });
 
 gulp.task('default', function defaultTask() {
