@@ -2,15 +2,15 @@
 
 module.exports.createManyFakePublishers = function createFake() {
     return [
-        { name: 'Fantasy Flight Games', code: 'FFG' },
-        { name: 'Wizards of the Coast', code: 'WOTC' },
-        { name: 'Pinnacle Entertainment Group', code: 'PEG' }
+        { name: 'Fantasy Flight Games', webSite: 'http://www.fantasyflightgames.com', code: 'FFG', isActive: true },
+        { name: 'Wizards of the Coast', webSite: 'http://www.wotc.com', code: 'WOTC', isActive: true },
+        { name: 'Pinnacle Entertainment Group', webSite: 'http://www.peginc.com', code: 'PEG', isActive: true }
     ];
 };
 
 module.exports.createOneFakePublisher = function createFake() {
     return [
-        { name: 'Fantasy Flight Games', code: 'FFG' }
+        { name: 'Fantasy Flight Games', webSite: 'http://www.fantasyflightgames.com', code: 'FFG', isActive: true }
     ];
 };
 

@@ -18,7 +18,12 @@ describe('Publisher Integration Tests', function describe() {
 	});
 
 	it('Should allow a publisher to be saved and return a publisher id', function test(done) {
-		var testData = { name: 'ITPublisher' };
+		var testData = {
+			name: 'Fantasy Flight Games',
+			webSite: 'http://www.fantasyflightgames.com',
+			code: 'FFG',
+			isActive: true
+		};
 
 		request
 			.post('/api/publisherList')
@@ -31,7 +36,12 @@ describe('Publisher Integration Tests', function describe() {
 	});
 
 	it('should allow a single publisher to be retrieved', function test(done) {
-		var testData = { name: 'ITPublisher' };
+		var testData = {
+			name: 'Fantasy Flight Games',
+			webSite: 'http://www.fantasyflightgames.com',
+			code: 'FFG',
+			isActive: true
+		};
 
 		request
 			.post('/api/publisherList')
@@ -59,8 +69,17 @@ describe('Publisher Integration Tests', function describe() {
 	});
 
 	it('should get all publishers', function test(done) {
-		var testData = { name: 'ITPublisher' };
-		var testData2 = { name: 'ITPublisher2' };
+		var testData = {
+			name: 'Fantasy Flight Games',
+			webSite: 'http://www.fantasyflightgames.com',
+			code: 'FFG',
+			isActive: true
+		};
+		var testData2 = {
+			name: 'Wizards of the Coast',
+			webSite: 'http://www.wotc.com',
+			code: 'WOTC',
+			isActive: true };
 
 		request
 			.post('/api/publisherList')
@@ -98,13 +117,18 @@ describe('Publisher Integration Tests', function describe() {
 	});
 
 	it('should allow updating of a publisher via put', function test(done) {
-		var testData = { name: 'ITPublisher', webSite: 'TestWebSite' };
+		var testData = {
+			name: 'Fantasy Flight Games',
+			webSite: 'http://www.fantasyflightgames.com',
+			code: 'FFG',
+			isActive: true
+		};
 
 		request
 			.post('/api/publisherList')
 			.send(testData)
 			.end(function end() {
-				testData.webSite = 'TestWebSiteNew';
+				testData.webSite = 'www.TestWebSiteNew.com';
 				request
 					.put('/api/publisherList/' + testData.name)
 					.send(testData)
@@ -119,13 +143,18 @@ describe('Publisher Integration Tests', function describe() {
 	});
 
 	it('should allow updating of a publisher via patch', function test(done) {
-		var testData = { name: 'ITPublisher', webSite: 'TestWebSite' };
+		var testData = {
+			name: 'Fantasy Flight Games',
+			webSite: 'http://www.fantasyflightgames.com',
+			code: 'FFG',
+			isActive: true
+		};
 
 		request
 			.patch('/api/publishers')
 			.send(testData)
 			.end(function end() {
-				testData.webSite = 'TestWebSiteNew';
+				testData.webSite = 'www.TestWebSiteNew.com';
 				request
 					.put('/api/publisherList/' + testData.name)
 					.send(testData)
@@ -141,8 +170,18 @@ describe('Publisher Integration Tests', function describe() {
 
 	it('should allow putting a publisher list', function test(done) {
 		var testData = { list: [
-									{ name: 'ITPublisher', code: 'Pub1' },
-									{ name: 'ITPublisher2', code: 'Pub2' }
+								{
+									name: 'Fantasy Flight Games',
+									webSite: 'http://www.fantasyflightgames.com',
+									code: 'FFG',
+									isActive: true
+								},
+								{
+									name: 'Wizards of the Coast',
+									webSite: 'http://www.wotc.com',
+									code: 'WOTC',
+									isActive: true
+								}
                                ]
 		};
 
