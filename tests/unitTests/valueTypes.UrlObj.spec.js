@@ -43,13 +43,13 @@ describe('UrlObj - ', function urlObjTestSuite() {
 
     it ('When created with a valid url string will allow reading of url', function testUrl() {
         var cut = valueTypes.createUrl('http://www.test.com');
-        assert.equal(cut.url, 'http://www.test.com');
+        assert.equal(cut.value, 'http://www.test.com');
     });
 
     it('Should not allow modification of object', function testInternalAccess() {
         var cut = valueTypes.createUrl('http://www.test.com');
         assert.throws(function assertCheck() {
-            cut.url = 'test';
+            cut.value = 'test';
         }, TypeError);
     });
 

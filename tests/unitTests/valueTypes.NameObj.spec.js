@@ -55,18 +55,18 @@ describe('NameObj - ', function nameObjTestSuite() {
 
     it('When created with a 3 letter string will allow reading of name', function testMinimumAllowed() {
         var cut = valueTypes.createName('abc');
-        assert.equal(cut.name, 'abc');
+        assert.equal(cut.value, 'abc');
     });
 
     it('When created with a 30 letter string will allow reading of name', function testMaximumAllowed() {
         var cut = valueTypes.createName('abcdefghijklmnopqrstuvwxyz1234');
-        assert.equal(cut.name, 'abcdefghijklmnopqrstuvwxyz1234');
+        assert.equal(cut.value, 'abcdefghijklmnopqrstuvwxyz1234');
     });
 
     it('Should not allow modification of object', function testInternalAccess() {
         var cut = valueTypes.createName('abc');
         assert.throws(function assertCheck() {
-            cut.name = 'test';
+            cut.value = 'test';
         }, TypeError);
     });
 });
