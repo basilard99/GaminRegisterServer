@@ -37,13 +37,13 @@ describe('IsActiveObj - ', function isActiveObjTestSuite() {
 
     it('When created with a boolean value will allow reading of value', function testBoolean() {
         var cut = valueTypes.createIsActive(false);
-        assert.equal(cut.isActive, false);
+        assert.equal(cut.value, false);
     });
 
     it('Should not allow modification of object', function testInternalAccess() {
         var cut = valueTypes.createIsActive(true);
         assert.throws(function assertCheck() {
-            cut.isActive = false;
+            cut.value = false;
         }, TypeError);
     });
 });
