@@ -3,9 +3,11 @@
 var assert = require('chai').assert;
 var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
 var Promise = require('bluebird');
-var publisherFactory = require('../../lib/models/publisher.js');
-var dataService = require('../../lib/models/dataService.js').create(db, publisherFactory);
 var neo4jManager = require('../.././neo4jFunctions').create();
+
+//var publisherFactory = require('../../lib/models/publisher.js');
+var dataService = require('../../lib/models/dataService.book.js').createBookService(db);
+
 
 /*
 var addSinglePublisherNode = function addSingleNode(data) {
@@ -31,7 +33,7 @@ var addTestPublishers = function addAsync(samplePublisherData) {
 };
 */
 
-describe('The Data Service will handle books as follows --', function dataServiceTests() {
+describe.only('The Data Service will handle books as follows --', function dataServiceTests() {
 
 /*
     describe('when handling lists of books', function bookList() {
@@ -67,46 +69,39 @@ describe('The Data Service will handle books as follows --', function dataServic
         });
     });
 */
-    describe.only('when dealing with a single book', function testSingleBook() {
+    describe('when dealing with a single book', function testSingleBook() {
 
         beforeEach(function beforeSavingBookTests() {
             return neo4jManager.clearNeo4j();
         });
 
-        it('should return an error if book is not truthy', function test() {
+        it('should return an error when saving a book that is not truthy', function test(done) {
             return dataService.saveBook(null)
                         .then(function successfulSave() {
                             throw new Error('Book should not have saved');
+                            done();
                         }, function failedSave(err) {
                             assert.strictEqual(err.message, 'Book is required');
+                            done();
                         });
         });
 
-    });
-
-    /*
-    describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
-
-        it('should return an error if publisher is not truthy', function test() {
-            return dataService.savePublisher(null)
-                        .then(function successfulSave() {
-                            throw new Error('Publisher should not have saved');
-                        }, function failedSave(err) {
-                            assert.strictEqual(err.message, 'Publisher is required');
-                        });
-        });
-
-        it('should return an error if publisher.name is not truthy', function test() {
+        it('should return an error when saving a book whose name is not truthy', function test(done) {
             var testData = { name: '' };
 
-            dataService.savePublisher(testData)
+            dataService.saveBook(testData)
                 .then(function successfulSave() {
-                    throw new Error('Publisher should not have saved');
+                    throw new Error('Book should not have saved');
+                    done();
                 }, function failedSave(err) {
-                    assert.strictEqual(err.message, 'Publisher Name is required');
+                    assert.strictEqual(err.message, 'Book name is required');
+                    done();
                 });
         });
 
+    });
+/*
+    describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
         it('should save a new publisher', function test() {
             var testData = publisherFactory.createPublisher(
                 TEST_NAME,
