@@ -5,9 +5,80 @@ var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
 var Promise = require('bluebird');
 var neo4jManager = require('../.././neo4jFunctions').create();
 
-//var publisherFactory = require('../../lib/models/publisher.js');
+var bookFactory = require('../../lib/models/book.js');
 var dataService = require('../../lib/models/dataService.book.js').createBookService(db);
+var bookTypes = require('../../lib/models/valueTypes.js').BookTypeEnum;
 
+var TEST_TITLE = 'Hell on Earth';
+var TEST_BOOK_CODE = 'abc123';
+var TEST_DESCRIPTION = 'Spaghetti western with meat';
+var TEST_COST = 29.95;
+var TEST_IN_INVENTORY = true;
+var TEST_IS_PDF = true;
+var TEST_IS_PRINT = true;
+var TEST_LOCATION = 'DTRPG';
+var TEST_TYPE = bookTypes.RPG;
+
+describe('The Data Service will handle books as follows --', function dataServiceTests() {
+
+    describe('when saving a single book', function testSaveSingleBook() {
+
+        beforeEach(function beforeSavingBookTests() {
+            return neo4jManager.clearNeo4j();
+        });
+
+        it('should return an error when saving a book that is not truthy', function test(done) {
+            return dataService.saveBook(null)
+                        .then(function successfulSave() {
+                            throw new Error('Book should not have saved');
+                            done();
+                        }, function failedSave(err) {
+                            assert.strictEqual(err.message, 'Book is required');
+                            done();
+                        });
+        });
+
+        it('should return an error when saving a book whose name is not truthy', function test(done) {
+            var testData = { name: '' };
+
+            dataService.saveBook(testData)
+                .then(function successfulSave() {
+                    throw new Error('Book should not have saved');
+                    done();
+                }, function failedSave(err) {
+                    assert.strictEqual(err.message, 'Book name is required');
+                    done();
+                });
+        });
+
+        it('should create a new book when no book with that name exists already', function test() {
+            var testData = bookFactory.createBook(TEST_TITLE,
+                                                  TEST_BOOK_CODE,
+                                                  TEST_DESCRIPTION,
+                                                  TEST_COST,
+                                                  TEST_IN_INVENTORY,
+                                                  TEST_IS_PDF,
+                                                  TEST_IS_PRINT,
+                                                  TEST_LOCATION,
+                                                  TEST_TYPE);
+
+            return dataService.saveBook(testData)
+                    .then(function successfulSave(data) {
+                        assert.ok(data);
+                        assert.strictEqual(data.title, TEST_TITLE);
+                        assert.strictEqual(data.bookCode, TEST_BOOK_CODE);
+                        assert.strictEqual(data.description, TEST_DESCRIPTION);
+                        assert.strictEqual(data.cost, TEST_COST);
+                        assert.strictEqual(data.inInventory, TEST_IN_INVENTORY);
+                        assert.strictEqual(data.isPdf, TEST_IS_PDF);
+                        assert.strictEqual(data.isPrint, TEST_IS_PRINT);
+                        assert.strictEqual(data.location, TEST_LOCATION);
+                        assert.strictEqual(data.type, TEST_TYPE);
+                    });
+        });
+
+    });
+});
 
 /*
 var addSinglePublisherNode = function addSingleNode(data) {
@@ -32,8 +103,6 @@ var addTestPublishers = function addAsync(samplePublisherData) {
     });
 };
 */
-
-describe.only('The Data Service will handle books as follows --', function dataServiceTests() {
 
 /*
     describe('when handling lists of books', function bookList() {
@@ -69,58 +138,8 @@ describe.only('The Data Service will handle books as follows --', function dataS
         });
     });
 */
-    describe('when dealing with a single book', function testSingleBook() {
-
-        beforeEach(function beforeSavingBookTests() {
-            return neo4jManager.clearNeo4j();
-        });
-
-        it('should return an error when saving a book that is not truthy', function test(done) {
-            return dataService.saveBook(null)
-                        .then(function successfulSave() {
-                            throw new Error('Book should not have saved');
-                            done();
-                        }, function failedSave(err) {
-                            assert.strictEqual(err.message, 'Book is required');
-                            done();
-                        });
-        });
-
-        it('should return an error when saving a book whose name is not truthy', function test(done) {
-            var testData = { name: '' };
-
-            dataService.saveBook(testData)
-                .then(function successfulSave() {
-                    throw new Error('Book should not have saved');
-                    done();
-                }, function failedSave(err) {
-                    assert.strictEqual(err.message, 'Book name is required');
-                    done();
-                });
-        });
-
-    });
 /*
     describe('saving a publisher (NEEDS REVIEWED)', function savePublisher() {
-        it('should save a new publisher', function test() {
-            var testData = publisherFactory.createPublisher(
-                TEST_NAME,
-                TEST_WEBSITE,
-                TEST_CODE,
-                TEST_ISACTIVE,
-                TEST_DESCRIPTION
-            );
-
-            return dataService.savePublisher(testData)
-                    .then(function successfulSave(node) {
-                        assert.ok(node);
-                        assert.strictEqual(node.name, TEST_NAME);
-                        assert.strictEqual(node.webSite, TEST_WEBSITE);
-                        assert.strictEqual(node.code, TEST_CODE);
-                        assert.strictEqual(node.isActive, TEST_ISACTIVE);
-                        assert.strictEqual(node.description, TEST_DESCRIPTION);
-                    });
-        });
 
         it('should update an existing publisher', function test() {
             var testData = require('./fakes/publisherData.js').createOneFakePublisher();
@@ -178,4 +197,3 @@ describe.only('The Data Service will handle books as follows --', function dataS
     });
 
 */
-});
