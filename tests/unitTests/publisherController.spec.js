@@ -14,27 +14,70 @@ var TEST_DESCRIPTION = 'TestDescription';
 var CONTROLLER_PATH = '../../lib/controllers/publisherController.js';
 
 describe('Publisher Controller Tests:', function publisherController() {
-    describe('Post Publisher', function postPublisher() {
+
+    describe('When GETting Publisher', function describe() {
+
+        it('should return a 200 status and found model', function test() {
+            var testModel = { someValue: 'someValue' };
+            var dataService = {
+                getPublisher: function mock() {
+                    return new Promise(function mockPromise(resolve) {
+                        resolve(testModel);
+                    });
+                }
+            };
+
+            var req = {
+                params: { publisherName: TEST_NAME }
+            };
+
+            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
+
+            return publisherController.get(req).then(function successfulGet(result) {
+                assert.strictEqual(result.httpStatus, 200)
+                assert.strictEqual(result.data.someValue, 'someValue');
+            }).catch(function failedGet(e) {
+                assert.fail('Promise rejected: ' + e.message);
+            });
+        });
+
+        it('should return a 500 status if service failed', function test() {
+
+            var dataService = {
+                getPublisher: function mock() {
+                    return new Promise(function mockPromise(resolve, reject) {
+                        reject(new Error('No matter'));
+                    });
+                }
+            };
+
+            var req = {
+                params: { publisherName: TEST_NAME }
+            };
+
+            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
+
+            return publisherController.get(req).then(function successfulGet(result) {
+                assert.fail('Promise should have been rejected');
+            }).catch(function failedGet(e) {
+                assert.strictEqual(e.httpStatus, 500);
+            });
+        });
+    });
+
+    describe('When PUTting a Publisher', function putPublisher() {
 
         it('should fail with a 400 if invalid publisher information is provided', function test() {
-            var dataService = {};
-
+            var publisherController = require(CONTROLLER_PATH).createPublisherController({});
             var req = {
                 body: {}
             };
 
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.post(req, res);
-
-            assert.isTrue(res.status.calledWith(400), 'Unexpected status code');
-            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'),
-                                              'Unexpected response');
-            assert.isTrue(res.send.calledOnce);
+            return publisherController.put(req).then(function successfulPut() {
+                assert.fail('Did not get expected failure');
+            }).catch(function failedPut(e) {
+                assert.strictEqual(e.httpStatus, 400);
+            });
         });
 
         it('should return 500 if the model cannot be saved', function test() {
@@ -45,6 +88,7 @@ describe('Publisher Controller Tests:', function publisherController() {
                     });
                 }
             };
+            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
             var req = {
                 body: {
@@ -56,18 +100,11 @@ describe('Publisher Controller Tests:', function publisherController() {
                 }
             };
 
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-
-            return publisherController.post(req, res);
-
-            assert.isTrue(res.status.calledWith(500), 'Unexpected status code');
-            assert.isTrue(res.send.calledWith('BI: An unknown error occurred'), 'Unexpected response');
-            assert.isTrue(res.send.calledOnce, 'Send was not called once');
+            return publisherController.put(req).then(function successfulPut() {
+                assert.fail('Did not get expected failure');
+            }).catch(function failedPut(e) {
+                assert.strictEqual(e.httpStatus, 500);
+            });
         });
 
         it('should successfully save the model', function test() {
@@ -87,6 +124,8 @@ describe('Publisher Controller Tests:', function publisherController() {
                 }
             };
 
+            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
+
             var req = {
                 body: {
                     name: TEST_NAME,
@@ -97,211 +136,39 @@ describe('Publisher Controller Tests:', function publisherController() {
                 }
             };
 
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.post(req, res);
-
-            setTimeout(function waitForResponse() {
-                assert.isTrue(res.status.calledWith(201), 'Unexpected status code');
-                assert.isTrue(res.send.calledWith(testModel), 'Unexpected response');
-                assert.isTrue(res.send.calledOnce);
-            }, 1500);
-        });
-
-    });
-
-    describe('Get Publisher', function describe() {
-
-        it ('should return a 200 status and found model', function test() {
-
-            var testModel = { someValue: 'someValue' };
-            var dataService = {
-                getPublisher: function mock() {
-                    return new Promise(function mockPromise(resolve) {
-                        resolve(testModel);
-                    });
-                }
-            };
-
-            var req = {
-                params: { publisherName: TEST_NAME }
-            };
-
-            var res = {
-                status: sinon.spy(),
-                json: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.getSingle(req, res);
-
-            setTimeout(function waitForResponse() {
-                assert.isTrue(res.status.calledWith(200), 'Unexpected status code');
-                assert.isTrue(res.json.calledWith(testModel), 'Unexpected response: ' + res.json.args[0][0]);
-                assert.isTrue(res.json.calledOnce);
-            }, 1500);
-
-        });
-
-        it ('should return a 500 status if service failed', function test() {
-
-            var dataService = {
-                getPublisher: function mock() {
-                    return new Promise(function mockPromise(resolve, reject) {
-                        reject(new Error('No matter'));
-                    });
-                }
-            };
-
-            var req = {
-                params: { publisherName: TEST_NAME }
-            };
-
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy(),
-                json: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.getSingle(req, res);
-
-            setTimeout(function responseReceived() {
-                assert.isTrue(res.status.calledWith(500), 'Unexpected status code');
-                assert.isTrue(res.send.calledWith('BI: An unknown error occurred'), 'Unexpected response');
-                assert.isFalse(res.json.called);
-            }, 1500);
+            return publisherController.put(req).then(function successfulPut(result) {
+                assert.strictEqual(result.httpStatus, 201);
+                assert.strictEqual(result.data.name, TEST_NAME);
+                assert.strictEqual(result.data.webSite, TEST_WEBSITE);
+                assert.strictEqual(result.data.code, TEST_CODE);
+                assert.strictEqual(result.data.isActive, TEST_ISACTIVE);
+                assert.strictEqual(result.data.description, TEST_DESCRIPTION);
+            }).catch(function failedPut(e) {
+                console.log(e.message);
+                assert.fail('Promise was rejected: ' + e.message);
+            });
         });
     });
 
-    describe('Put Publisher', function describe() {
+    describe('When PATCHing Publisher', function patchPublisherSuite() {
 
-        it ('should fail with a 400 if invalid publisher information is provided', function test() {
+        it('should fail with a 400 if invalid publisher information is provided', function test() {
             var dataService = {};
 
             var req = {
                 body: {}
             };
 
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
+            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.put(req, res);
-
-            assert.isTrue(res.status.calledWith(400), 'Unexpected status code');
-            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'),
-                                              'Unexpected response');
-            assert.isTrue(res.send.calledOnce);
+            return publisherController.patch(req).then( function successfulPath() {
+                assert.fail('Promise should have been rejected');
+            }).catch(function failedPatch(e) {
+                assert.strictEqual(e.httpStatus, 400);
+            });
         });
 
-        it ('should return 500 if the model cannot be saved', function test() {
-            var dataService = {
-                savePublisher: function mock() {
-                    return new Promise(function mockPromise(resolve, reject) {
-                        reject(new Error('Doesn\'t matter'));
-                    });
-                }
-            };
-
-            var req = {
-                body: {
-                    name: TEST_NAME,
-                    webSite: TEST_WEBSITE,
-                    code: TEST_CODE,
-                    isActive: TEST_ISACTIVE,
-                    description: TEST_DESCRIPTION
-                }
-            };
-
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.put(req, res);
-
-            setTimeout(function timeoutExceeded() {
-                assert.isTrue(res.status.calledWith(500),'Unexpected status code');
-                assert.isTrue(res.send.calledWith('BI: An unknown error occurred'),'Unexpected response');
-                assert.isTrue(res.send.calledOnce);
-            }, 1500);
-        });
-
-        it ('should successfully save the model', function test() {
-            var testModel = publisherFactory.createPublisher(
-                TEST_NAME,
-                TEST_WEBSITE,
-                TEST_CODE,
-                TEST_ISACTIVE,
-                TEST_DESCRIPTION
-            );
-
-            var dataService = {
-                savePublisher: function mock(publisher) {
-                    return new Promise(function mockPromise(resolve) {
-                        resolve(publisher);
-                    });
-                }
-            };
-
-            var req = {
-                body: {
-                    name: TEST_NAME,
-                    webSite: TEST_WEBSITE,
-                    code: TEST_CODE,
-                    isActive: TEST_ISACTIVE,
-                    description: TEST_DESCRIPTION
-                }
-            };
-
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.put(req, res);
-
-            setTimeout(function timeoutExceeded() {
-                assert.isTrue(res.status.calledWith(201), 'Unexpected status code');
-                assert.isTrue(res.send.calledWith(testModel), 'Unexpected response');
-                assert.isTrue(res.send.calledOnce);
-            }, 1500);
-        });
-    });
-
-    describe('Patch Publisher', function describe() {
-
-        it ('should fail with a 400 if invalid publisher information is provided', function test() {
-            var dataService = {};
-
-            var req = {
-                body: {}
-            };
-
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
-
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.patch(req, res);
-
-            assert.isTrue(res.status.calledWith(400),'Unexpected status code');
-            assert.isTrue(res.send.calledWith('The name value must be defined and have a value'),
-                                              'Unexpected response');
-            assert.isTrue(res.send.calledOnce);
-        });
-
-        it ('should return 500 if the model cannot be saved', function test() {
+        it('should return 500 if the model cannot be saved', function test() {
             var dataService = {
                 savePublisher: function mock(publisher, callback) {
                     callback(new Error('Doesn\'t matter'), null);
@@ -318,20 +185,16 @@ describe('Publisher Controller Tests:', function publisherController() {
                 }
             };
 
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
+            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.patch(req, res);
-
-            assert.isTrue(res.status.calledWith(500), 'Unexpected status code');
-            assert.isTrue(res.send.calledWith('BI: An unknown error occurred'), 'Unexpected response');
-            assert.isTrue(res.send.calledOnce);
+            return publisherController.patch(req).then( function successfulPath() {
+                assert.fail('Promise should have been rejected');
+            }).catch(function failedPatch(e) {
+                assert.strictEqual(e.httpStatus, 500);
+            });
         });
 
-        it ('should successfully save the model', function test() {
+        it('should successfully save the model', function test() {
             var testModel = publisherFactory.createPublisher(
                 TEST_NAME,
                 TEST_WEBSITE,
@@ -356,17 +219,13 @@ describe('Publisher Controller Tests:', function publisherController() {
                 }
             };
 
-            var res = {
-                status: sinon.spy(),
-                send: sinon.spy()
-            };
+            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            var publisherController = require(CONTROLLER_PATH)(dataService);
-            publisherController.patch(req, res);
-
-            assert.isTrue(res.status.calledWith(201), 'Unexpected status code');
-            assert.isTrue(res.send.calledWith(testModel), 'Unexpected response');
-            assert.isTrue(res.send.calledOnce);
+            return publisherController.patch(req).then( function successfulPath(result) {
+                assert.strictEqual(result.httpStatus, 201);
+            }).catch(function failedPatch(e) {
+                assert.fail('Promise was rejected');
+            });
         });
     });
 });
