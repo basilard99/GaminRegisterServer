@@ -1,8 +1,6 @@
 'use strict';
 
-var publisherFactory = require('../../lib/models/publisher.js');
 var assert = require('chai').assert;
-var sinon = require('sinon');
 var Promise = require('bluebird');
 
 var TEST_NAME = 'TestName';
@@ -29,7 +27,7 @@ describe('Publisher Controller Tests:', function publisherControllerTests() {
             var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
             return publisherController.get(TEST_NAME).then(function successfulGet(result) {
-                assert.strictEqual(result.httpStatus, 200)
+                assert.strictEqual(result.httpStatus, 200);
                 assert.strictEqual(result.data.someValue, 'someValue');
             }).catch(function failedGet(e) {
                 assert.fail('Promise rejected: ' + e.message);
@@ -47,7 +45,7 @@ describe('Publisher Controller Tests:', function publisherControllerTests() {
 
             var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            return publisherController.get(TEST_NAME).then(function successfulGet(result) {
+            return publisherController.get(TEST_NAME).then(function successfulGet() {
                 assert.fail('Promise should have been rejected');
             }).catch(function failedGet(e) {
                 assert.strictEqual(e.httpStatus, 500);
@@ -92,14 +90,6 @@ describe('Publisher Controller Tests:', function publisherControllerTests() {
         });
 
         it('should successfully save the model', function testSuccessfulSave() {
-            var testModel = publisherFactory.createPublisher(
-                TEST_NAME,
-                TEST_WEBSITE,
-                TEST_CODE,
-                TEST_ISACTIVE,
-                TEST_DESCRIPTION
-            );
-
             var dataService = {
                 savePublisher: function mock(publisher) {
                     return new Promise(function mockPromise(resolve) {
