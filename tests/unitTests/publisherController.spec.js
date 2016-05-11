@@ -27,13 +27,9 @@ describe('Publisher Controller Tests:', function publisherController() {
                 }
             };
 
-            var req = {
-                params: { publisherName: TEST_NAME }
-            };
-
             var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            return publisherController.get(req).then(function successfulGet(result) {
+            return publisherController.get(TEST_NAME).then(function successfulGet(result) {
                 assert.strictEqual(result.httpStatus, 200)
                 assert.strictEqual(result.data.someValue, 'someValue');
             }).catch(function failedGet(e) {
@@ -42,7 +38,6 @@ describe('Publisher Controller Tests:', function publisherController() {
         });
 
         it('should return a 500 status if service failed', function test() {
-
             var dataService = {
                 getPublisher: function mock() {
                     return new Promise(function mockPromise(resolve, reject) {
@@ -51,13 +46,9 @@ describe('Publisher Controller Tests:', function publisherController() {
                 }
             };
 
-            var req = {
-                params: { publisherName: TEST_NAME }
-            };
-
             var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            return publisherController.get(req).then(function successfulGet(result) {
+            return publisherController.get(TEST_NAME).then(function successfulGet(result) {
                 assert.fail('Promise should have been rejected');
             }).catch(function failedGet(e) {
                 assert.strictEqual(e.httpStatus, 500);
@@ -68,12 +59,9 @@ describe('Publisher Controller Tests:', function publisherController() {
     describe('When PUTting a Publisher', function putPublisher() {
 
         it('should fail with a 400 if invalid publisher information is provided', function test() {
-            var publisherController = require(CONTROLLER_PATH).createPublisherController({});
-            var req = {
-                body: {}
-            };
+            var publisherController = require(CONTROLLER_PATH).createPublisherController();
 
-            return publisherController.put(req).then(function successfulPut() {
+            return publisherController.put({}).then(function successfulPut() {
                 assert.fail('Did not get expected failure');
             }).catch(function failedPut(e) {
                 assert.strictEqual(e.httpStatus, 400);
@@ -90,17 +78,15 @@ describe('Publisher Controller Tests:', function publisherController() {
             };
             var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            var req = {
-                body: {
-                    name: TEST_NAME,
-                    webSite: TEST_WEBSITE,
-                    code: TEST_CODE,
-                    isActive: TEST_ISACTIVE,
-                    description: TEST_DESCRIPTION
-                }
+            var testData = {
+                name: TEST_NAME,
+                webSite: TEST_WEBSITE,
+                code: TEST_CODE,
+                isActive: TEST_ISACTIVE,
+                description: TEST_DESCRIPTION
             };
 
-            return publisherController.put(req).then(function successfulPut() {
+            return publisherController.put(testData).then(function successfulPut() {
                 assert.fail('Did not get expected failure');
             }).catch(function failedPut(e) {
                 assert.strictEqual(e.httpStatus, 500);
@@ -126,17 +112,15 @@ describe('Publisher Controller Tests:', function publisherController() {
 
             var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
 
-            var req = {
-                body: {
-                    name: TEST_NAME,
-                    webSite: TEST_WEBSITE,
-                    code: TEST_CODE,
-                    isActive: TEST_ISACTIVE,
-                    description: TEST_DESCRIPTION
-                }
+            var testData = {
+                name: TEST_NAME,
+                webSite: TEST_WEBSITE,
+                code: TEST_CODE,
+                isActive: TEST_ISACTIVE,
+                description: TEST_DESCRIPTION
             };
 
-            return publisherController.put(req).then(function successfulPut(result) {
+            return publisherController.put(testData).then(function successfulPut(result) {
                 assert.strictEqual(result.httpStatus, 201);
                 assert.strictEqual(result.data.name, TEST_NAME);
                 assert.strictEqual(result.data.webSite, TEST_WEBSITE);
@@ -146,85 +130,6 @@ describe('Publisher Controller Tests:', function publisherController() {
             }).catch(function failedPut(e) {
                 console.log(e.message);
                 assert.fail('Promise was rejected: ' + e.message);
-            });
-        });
-    });
-
-    describe('When PATCHing Publisher', function patchPublisherSuite() {
-
-        it('should fail with a 400 if invalid publisher information is provided', function test() {
-            var dataService = {};
-
-            var req = {
-                body: {}
-            };
-
-            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
-
-            return publisherController.patch(req).then( function successfulPath() {
-                assert.fail('Promise should have been rejected');
-            }).catch(function failedPatch(e) {
-                assert.strictEqual(e.httpStatus, 400);
-            });
-        });
-
-        it('should return 500 if the model cannot be saved', function test() {
-            var dataService = {
-                savePublisher: function mock(publisher, callback) {
-                    callback(new Error('Doesn\'t matter'), null);
-                }
-            };
-
-            var req = {
-                body: {
-                    name: TEST_NAME,
-                    webSite: TEST_WEBSITE,
-                    code: TEST_CODE,
-                    isActive: TEST_ISACTIVE,
-                    description: TEST_DESCRIPTION
-                }
-            };
-
-            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
-
-            return publisherController.patch(req).then( function successfulPath() {
-                assert.fail('Promise should have been rejected');
-            }).catch(function failedPatch(e) {
-                assert.strictEqual(e.httpStatus, 500);
-            });
-        });
-
-        it('should successfully save the model', function test() {
-            var testModel = publisherFactory.createPublisher(
-                TEST_NAME,
-                TEST_WEBSITE,
-                TEST_CODE,
-                TEST_ISACTIVE,
-                TEST_DESCRIPTION
-            );
-
-            var dataService = {
-                savePublisher: function mock(publisher, callback) {
-                    callback(null, publisher);
-                }
-            };
-
-            var req = {
-                body: {
-                    name: TEST_NAME,
-                    webSite: TEST_WEBSITE,
-                    code: TEST_CODE,
-                    isActive: TEST_ISACTIVE,
-                    description: TEST_DESCRIPTION
-                }
-            };
-
-            var publisherController = require(CONTROLLER_PATH).createPublisherController(dataService);
-
-            return publisherController.patch(req).then( function successfulPath(result) {
-                assert.strictEqual(result.httpStatus, 201);
-            }).catch(function failedPatch(e) {
-                assert.fail('Promise was rejected');
             });
         });
     });
