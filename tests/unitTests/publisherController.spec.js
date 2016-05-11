@@ -13,14 +13,13 @@ var TEST_DESCRIPTION = 'TestDescription';
 
 var CONTROLLER_PATH = '../../lib/controllers/publisherController.js';
 
-describe('Publisher Controller Tests:', function publisherController() {
+describe('Publisher Controller Tests:', function publisherControllerTests() {
 
-    describe('When GETting Publisher', function describe() {
-
-        it('should return a 200 status and found model', function test() {
+    describe('When GETting Publisher', function getPublisher() {
+        it('should return a 200 status and found model', function testSuccessfulCreate() {
             var testModel = { someValue: 'someValue' };
             var dataService = {
-                getPublisher: function mock() {
+                getPublisher: function mockGetPublisher() {
                     return new Promise(function mockPromise(resolve) {
                         resolve(testModel);
                     });
@@ -37,7 +36,7 @@ describe('Publisher Controller Tests:', function publisherController() {
             });
         });
 
-        it('should return a 500 status if service failed', function test() {
+        it('should return a 500 status if service failed', function testFailedCreate() {
             var dataService = {
                 getPublisher: function mock() {
                     return new Promise(function mockPromise(resolve, reject) {
@@ -57,8 +56,7 @@ describe('Publisher Controller Tests:', function publisherController() {
     });
 
     describe('When PUTting a Publisher', function putPublisher() {
-
-        it('should fail with a 400 if invalid publisher information is provided', function test() {
+        it('should fail with a 400 if invalid publisher information is provided', function testInvalidPublisher() {
             var publisherController = require(CONTROLLER_PATH).createPublisherController();
 
             return publisherController.put({}).then(function successfulPut() {
@@ -68,7 +66,7 @@ describe('Publisher Controller Tests:', function publisherController() {
             });
         });
 
-        it('should return 500 if the model cannot be saved', function test() {
+        it('should return 500 if the model cannot be saved', function testDataServiceFails() {
             var dataService = {
                 savePublisher: function mock() {
                     return new Promise(function mockPromise(resolve, reject) {
@@ -93,7 +91,7 @@ describe('Publisher Controller Tests:', function publisherController() {
             });
         });
 
-        it('should successfully save the model', function test() {
+        it('should successfully save the model', function testSuccessfulSave() {
             var testModel = publisherFactory.createPublisher(
                 TEST_NAME,
                 TEST_WEBSITE,
