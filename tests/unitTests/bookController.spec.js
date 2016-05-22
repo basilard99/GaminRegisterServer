@@ -93,7 +93,6 @@ describe('Book Controller Tests: ', function bookControllorSuite() {
             };
 
             return bookController.put(req).then(function successfulPut(arg) {
-                console.log('???');
                 assert.strictEqual(arg.httpStatus, 201, 'Unexpected status code: ' + arg.httpStatus);
             }).catch(function failedPut(e) {
                 console.log(e.message);
