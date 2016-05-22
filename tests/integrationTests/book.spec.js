@@ -1,6 +1,5 @@
 'use strict';
 
-var should = require('should');
 var app = require('../../app.js');
 var request = require('supertest')(app);
 var neo4jManager = require('../.././neo4jFunctions').create();

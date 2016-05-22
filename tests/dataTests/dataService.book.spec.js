@@ -2,7 +2,6 @@
 
 var assert = require('chai').assert;
 var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
-var Promise = require('bluebird');
 var neo4jManager = require('../.././neo4jFunctions').create();
 
 var bookFactory = require('../../lib/models/book.js');

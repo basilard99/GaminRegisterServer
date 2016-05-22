@@ -1,7 +1,6 @@
 'use strict';
 
 var assert = require('chai').assert;
-var sinon = require('sinon');
 var Promise = require('bluebird');
 var valueTypes = require('../../lib/models/valueTypes.js');
 
@@ -72,7 +71,7 @@ describe('Book Controller Tests: ', function bookControllorSuite() {
         it('should return 201 if the model is created', function testPutSuccessful() {
             var dataService = {
                 saveBook: function mock() {
-                    return new Promise(function mockPromise(resolve, reject) {
+                    return new Promise(function mockPromise(resolve) {
                         resolve(new Error('Doesn\'t matter'));
                     });
                 }
@@ -95,12 +94,12 @@ describe('Book Controller Tests: ', function bookControllorSuite() {
 
             return bookController.put(req).then(function successfulPut(arg) {
                 console.log('???');
-                assert.strictEqual(arg.httpStatus, 201, "Unexpected status code: " + arg.httpStatus);
+                assert.strictEqual(arg.httpStatus, 201, 'Unexpected status code: ' + arg.httpStatus);
             }).catch(function failedPut(e) {
                 console.log(e.message);
                 assert.fail('Did not get expected success: ' + e.message);
             });
-        })
+        });
     });
 
 });
