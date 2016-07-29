@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('chai').assert;
-var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
+var db = require('seraph')({ name: 'neo4j', pass: 'p4ss' });
 var Promise = require('bluebird');
 var publisherFactory = require('../../lib/models/publisher.js');
 var dataService = require('../../lib/models/dataService.publisher.js').createPublisherService(db, publisherFactory);

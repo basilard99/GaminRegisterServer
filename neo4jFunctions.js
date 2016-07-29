@@ -1,6 +1,6 @@
 'use strict';
 
-var db = require('seraph')({ name: 'neo4j', pass: 'pass' });
+var db = require('seraph')({ name: 'neo4j', pass: 'p4ss' });
 var Promise = require('bluebird');
 
 var ThisObj = function neo4jOperations() {

@@ -34,7 +34,7 @@ gulp.task('dev', function devTask() {
         script: 'app.js',
         ext: 'js',
         env: {
-            PORT: 8000
+            PORT: 8100
         },
         ignore: ['./node_modules/**']
     })
@@ -69,9 +69,6 @@ gulp.task('data', function dataTestTask(done) {
 });
 
 gulp.task('default', function defaultTask() {
-
-	neo4jManager.switchToDevelopmentDb();
-
 	nodemon({
 		script: 'app.js',
 		ext: 'js',
