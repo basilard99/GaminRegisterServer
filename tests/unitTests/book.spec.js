@@ -13,6 +13,7 @@ var TEST_IS_PDF = true;
 var TEST_IS_PRINT = true;
 var TEST_LOCATION = 'OneDrive';
 var TEST_TYPE = valueTypes.BookTypeEnum.WarGame;
+var TEST_PUBLISHER_URI = '/publishers/FFG';
 
 describe('The book should behave as follows - ', function describe() {
 
@@ -26,7 +27,8 @@ describe('The book should behave as follows - ', function describe() {
                                    false,
                                    false,
                                    TEST_LOCATION,
-                                   TEST_TYPE);
+                                   TEST_TYPE,
+                                   TEST_PUBLISHER_URI);
         }, 'The book must be either a print or PDF');
     });
 
@@ -40,7 +42,8 @@ describe('The book should behave as follows - ', function describe() {
                                    TEST_IS_PDF,
                                    TEST_IS_PRINT,
                                    TEST_LOCATION,
-                                   'a');
+                                   'a',
+                                   TEST_PUBLISHER_URI);
         }, 'The type is not a valid book type');
     });
 
@@ -54,7 +57,8 @@ describe('The book should behave as follows - ', function describe() {
                                              TEST_IS_PDF,
                                              TEST_IS_PRINT,
                                              TEST_LOCATION,
-                                             TEST_TYPE
+                                             TEST_TYPE,
+                                             TEST_PUBLISHER_URI
             );
 
             assert.strictEqual(cut.title, TEST_TITLE);
@@ -66,6 +70,7 @@ describe('The book should behave as follows - ', function describe() {
             assert.strictEqual(cut.isPrint, TEST_IS_PRINT);
             assert.strictEqual(cut.location, TEST_LOCATION);
             assert.strictEqual(cut.type, TEST_TYPE);
+            assert.strictEqual(cut.publisherUri, TEST_PUBLISHER_URI);
         }
     );
 });

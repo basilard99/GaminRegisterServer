@@ -15,6 +15,7 @@ var TEST_IS_PDF = true;
 var TEST_IS_PRINT = true;
 var TEST_LOCATION = 'OneDrive';
 var TEST_TYPE = valueTypes.BookTypeEnum.WarGame;
+var TEST_PUBLISHER_URI = '/publishers/FFG';
 
 describe('Book Controller Tests: ', function bookControllorSuite() {
 
@@ -53,7 +54,8 @@ describe('Book Controller Tests: ', function bookControllorSuite() {
                     isPdf: TEST_IS_PDF,
                     isPrint: TEST_IS_PRINT,
                     location: TEST_LOCATION,
-                    type: TEST_TYPE
+                    type: TEST_TYPE,
+                    publisherUri: TEST_PUBLISHER_URI
                 }
             };
 
@@ -88,7 +90,8 @@ describe('Book Controller Tests: ', function bookControllorSuite() {
                     isPdf: TEST_IS_PDF,
                     isPrint: TEST_IS_PRINT,
                     location: TEST_LOCATION,
-                    type: TEST_TYPE
+                    type: TEST_TYPE,
+                    publisherUri: TEST_PUBLISHER_URI
                 }
             };
 
