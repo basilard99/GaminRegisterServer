@@ -49,8 +49,8 @@ describe('NameObj - ', function nameObjTestSuite() {
 
     it('When created with a 31 letter string will throw an exception', function testTooLong() {
         assert.throws(function assertCheck() {
-            valueTypes.createName('abcdegfhijklmnopqrstuvwxyz12345');
-        }, 'The name value cannot contain more than 30 characters');
+            valueTypes.createName('abcdegfhijklmnopqrstuvwxyz1234abcdegfhijklmnopqrstuvwxyz1234abcdegfhijklmnopqrstuvwxyz1234');
+        }, 'The name value cannot contain more than 75 characters');
     });
 
     it('When created with a 3 letter string will allow reading of name', function testMinimumAllowed() {
@@ -59,8 +59,8 @@ describe('NameObj - ', function nameObjTestSuite() {
     });
 
     it('When created with a 30 letter string will allow reading of name', function testMaximumAllowed() {
-        var cut = valueTypes.createName('abcdefghijklmnopqrstuvwxyz1234');
-        assert.equal(cut.value, 'abcdefghijklmnopqrstuvwxyz1234');
+        var cut = valueTypes.createName('abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234abcdefghijklmno');
+        assert.equal(cut.value, 'abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz1234abcdefghijklmno');
     });
 
     it('Should not allow modification of object', function testInternalAccess() {
