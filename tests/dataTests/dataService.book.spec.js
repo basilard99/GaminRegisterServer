@@ -17,6 +17,7 @@ var TEST_IS_PDF = true;
 var TEST_IS_PRINT = true;
 var TEST_LOCATION = 'DTRPG';
 var TEST_TYPE = bookTypes.RPG;
+var TEST_PUBLISHER_URI = '/publishers/FFG';
 
 describe('The Data Service will handle books as follows --', function dataServiceTests() {
 
@@ -59,7 +60,8 @@ describe('The Data Service will handle books as follows --', function dataServic
                                                   TEST_IS_PDF,
                                                   TEST_IS_PRINT,
                                                   TEST_LOCATION,
-                                                  TEST_TYPE);
+                                                  TEST_TYPE,
+                                                  TEST_PUBLISHER_URI);
 
             return dataService.saveBook(testData)
                     .then(function successfulSave(data) {
@@ -73,6 +75,7 @@ describe('The Data Service will handle books as follows --', function dataServic
                         assert.strictEqual(data.isPrint, TEST_IS_PRINT);
                         assert.strictEqual(data.location, TEST_LOCATION);
                         assert.strictEqual(data.type, TEST_TYPE);
+                        assert.strictEqual(data.publisherUri, TEST_PUBLISHER_URI);
                     });
         });
 
