@@ -27,7 +27,8 @@ describe('Book Integration Tests', function bookIntegrationTestSuite() {
                     isPdf: true,
                     isPrint: true,
                     location: 'Home',
-                    type: valueTypes.BookTypeEnum.RPG
+                    type: valueTypes.BookTypeEnum.RPG,
+                    publisherUri: '/publishers/FFG'
         };
 
         request
