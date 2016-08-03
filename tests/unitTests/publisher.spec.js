@@ -27,4 +27,34 @@ describe('The publisher should behave as follows - ', function describe() {
             assert.strictEqual(cut.description, TEST_DESCRIPTION);
         }
     );
+    
+    it('The factory should create create an object if isActive is \'true\'', function testStringTrue() {
+            var cut = publisherFactory.createPublisher(TEST_NAME,
+                                                       TEST_WEBSITE,
+                                                       TEST_CODE,
+                                                       'true',
+                                                       TEST_DESCRIPTION
+                      );
+
+            assert.strictEqual(cut.name, TEST_NAME);
+            assert.strictEqual(cut.webSite, TEST_WEBSITE);
+            assert.strictEqual(cut.code, TEST_CODE);
+            assert.strictEqual(cut.isActive, true);
+            assert.strictEqual(cut.description, TEST_DESCRIPTION);
+    });
+    
+    it('The factory should create create an object if isActive is \'false\'', function testStringFalse() {
+            var cut = publisherFactory.createPublisher(TEST_NAME,
+                                                       TEST_WEBSITE,
+                                                       TEST_CODE,
+                                                       'false',
+                                                       TEST_DESCRIPTION
+                      );
+
+            assert.strictEqual(cut.name, TEST_NAME);
+            assert.strictEqual(cut.webSite, TEST_WEBSITE);
+            assert.strictEqual(cut.code, TEST_CODE);
+            assert.strictEqual(cut.isActive, false);
+            assert.strictEqual(cut.description, TEST_DESCRIPTION);
+    });
 });
