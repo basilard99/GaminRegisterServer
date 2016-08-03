@@ -13,7 +13,7 @@ var TEST_IS_PDF = true;
 var TEST_IS_PRINT = true;
 var TEST_LOCATION = 'OneDrive';
 var TEST_TYPE = valueTypes.BookTypeEnum.WarGame;
-var TEST_PUBLISHER_URI = '/publishers/FFG';
+var TEST_PUBLISHER_URI = '/publisherList/FFG';
 
 describe('The book should behave as follows - ', function describe() {
 

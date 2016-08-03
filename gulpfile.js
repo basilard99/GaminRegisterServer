@@ -83,9 +83,6 @@ gulp.task('default', function defaultTask() {
 });
 
 gulp.task('mantest', function manualTestTask() {
-
-	neo4jManager.switchToDevelopmentDb();
-
 	nodemon({
 		script: 'app.js',
 		ext: 'js',

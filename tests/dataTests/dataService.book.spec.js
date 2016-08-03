@@ -17,7 +17,7 @@ var TEST_IS_PDF = true;
 var TEST_IS_PRINT = true;
 var TEST_LOCATION = 'DTRPG';
 var TEST_TYPE = bookTypes.RPG;
-var TEST_PUBLISHER_URI = '/publishers/FFG';
+var TEST_PUBLISHER_URI = '/publisherList/FFG';
 
 describe('The Data Service will handle books as follows --', function dataServiceTests() {
 
